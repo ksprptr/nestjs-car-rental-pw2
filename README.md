@@ -1,4 +1,4 @@
-![NestJS Logo](https://nestjs.com/img/logo-small.svg)
+<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 
 # Car Rental API - NestJS
 
