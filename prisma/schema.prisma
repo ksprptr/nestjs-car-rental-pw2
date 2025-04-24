@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Fuel {
+  BENZINE
+  DIESEL
+  ELECTRO
+}
+
+enum Transmission {
+  AUTOMATIC
+  MANUAL
+}
+
+enum Continent {
+  AFRICA
+  ANTARCTICA
+  ASIA
+  EUROPE
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  AUSTRALIA
+}
+
+model User {
+  id        String        @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String        @unique
+  password  String
+  role      Role
+  address   Address       @relation(fields: [addressId], references: [id])
+  addressId String
+  vehicles  UserVehicle[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  city         String
+  zip          String
+  streetName   String
+  streetNumber String
+  country      Country  @relation(fields: [countryId], references: [id])
+  countryId    String
+  users        User[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model UserVehicle {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  dateFrom  DateTime
+  dateTo    DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vehicle {
+  id           String            @id @default(uuid())
+  model        String
+  priceUsd     Float
+  attributes   VehicleAttributes @relation(fields: [attributesId], references: [id])
+  attributesId String            @unique
+  mark         Mark              @relation(fields: [markId], references: [id])
+  markId       String
+  color        Color             @relation(fields: [colorId], references: [id])
+  colorId      String
+  users        UserVehicle[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model VehicleAttributes {
+  id              String       @id @default(uuid())
+  manufactureYear Int
+  seatCount       Int
+  speedMph        Int
+  consumption     Float
+  fuel            Fuel
+  transmission    Transmission
+  vehicle         Vehicle?
+}
+
+model Mark {
+  id          String    @id @default(uuid())
+  name        String
+  foundedYear Int
+  description String
+  country     Country   @relation(fields: [countryId], references: [id])
+  countryId   String
+  vehicles    Vehicle[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Color {
+  id              String    @id @default(uuid())
+  name            String
+  hex             String
+  brightnessLevel Int
+  metallic        Boolean
+  vehicles        Vehicle[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Country {
+  id         String    @id @default(uuid())
+  name       String
+  isoCode    String
+  continent  Continent
+  population Int
+  addresses  Address[]
+  marks      Mark[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
