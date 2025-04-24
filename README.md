@@ -18,7 +18,7 @@
 
 ## Installation
 
-- Go to the project folder using `cd ksprptr-api/`
+- Go to the project folder using `cd nestjs-car-rental-pw2/`
 - Install all dependecies using `pnpm install`
 - Copy `.env.example` to `.env` and change the properties
   - **(Only first run)** Run `npx prisma migrate deploy`
