@@ -31,14 +31,14 @@ export class VehicleAttributesModel {
     example: 186,
     description: "Vehicle's top speed in mph",
   })
-  speedMph: number;
+  topSpeedMph: number;
 
   @ApiProperty({
     type: 'number',
     example: 13,
     description: "Vehicle's fuel consumption in l/100km",
   })
-  consumption: number;
+  fuelConsumption: number;
 
   @ApiProperty({
     type: 'string',
@@ -55,4 +55,11 @@ export class VehicleAttributesModel {
     enum: Transmission,
   })
   transmission: Transmission;
+
+  @ApiProperty({
+    type: 'number',
+    example: 1200,
+    description: "Vehicle's mileage in km",
+  })
+  mileage: number;
 }

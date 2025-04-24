@@ -47,8 +47,8 @@ model User {
   email     String        @unique
   password  String
   role      Role
-  address   Address       @relation(fields: [addressId], references: [id])
-  addressId String
+  address   Address?      @relation(fields: [addressId], references: [id])
+  addressId String?
   vehicles  UserVehicle[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
@@ -98,10 +98,11 @@ model VehicleAttributes {
   id              String       @id @default(uuid())
   manufactureYear Int
   seatCount       Int
-  speedMph        Int
-  consumption     Float
+  topSpeedMph     Int
+  fuelConsumption Float
   fuel            Fuel
   transmission    Transmission
+  mileage         Int
   vehicle         Vehicle?
 }
 
