@@ -11,6 +11,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -52,7 +53,7 @@ export class BrandsController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new brand' })
-  @ApiOkResponse({ type: BrandModel, description: 'Brand created' })
+  @ApiCreatedResponse({ type: BrandModel, description: 'Brand created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AdminGuard)

@@ -13,6 +13,7 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -68,7 +69,7 @@ export class UsersController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiOkResponse({ type: UserModel, description: 'User created' })
+  @ApiCreatedResponse({ type: UserModel, description: 'User created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AdminGuard)

@@ -11,6 +11,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -53,7 +54,7 @@ export class ColorsController {
    * Controller to create a new color
    */
   @ApiOperation({ summary: 'Create a new color' })
-  @ApiOkResponse({ type: ColorModel, description: 'Color created' })
+  @ApiCreatedResponse({ type: ColorModel, description: 'Color created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()

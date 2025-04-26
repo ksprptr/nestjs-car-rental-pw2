@@ -11,6 +11,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -53,7 +54,7 @@ export class AddressesController {
    * Controller to create a new address
    */
   @ApiOperation({ summary: 'Create a new address' })
-  @ApiOkResponse({ type: AddressModel, description: 'Address created' })
+  @ApiCreatedResponse({ type: AddressModel, description: 'Address created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()

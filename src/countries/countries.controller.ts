@@ -11,6 +11,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -53,7 +54,7 @@ export class CountriesController {
    * Controller to create a new country
    */
   @ApiOperation({ summary: 'Create a new country' })
-  @ApiOkResponse({ type: CountryModel, description: 'Country created' })
+  @ApiCreatedResponse({ type: CountryModel, description: 'Country created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()
