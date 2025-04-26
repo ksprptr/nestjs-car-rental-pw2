@@ -33,7 +33,7 @@ export class AddressModel {
     },
     description: "Address's country",
   })
-  country: CountryModel;
+  country?: CountryModel;
 
   @ApiProperty({
     type: 'string',

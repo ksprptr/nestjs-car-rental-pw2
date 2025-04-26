@@ -19,8 +19,6 @@ import {
  * Class representing a brands controller
  */
 @ApiTags('Brands')
-@ApiBearerAuth()
-@UseGuards(AuthGuard, AdminGuard)
 @Controller('brands')
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
@@ -52,10 +50,12 @@ export class BrandsController {
   /**
    * Controller to create a new brand
    */
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new brand' })
   @ApiOkResponse({ type: BrandModel, description: 'Brand created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @UseGuards(AuthGuard, AdminGuard)
   @Post()
   async create(@Body() createBrandDto: CreateBrandDto): Promise<BrandModel> {
     return this.brandsService.create(createBrandDto);
@@ -64,10 +64,12 @@ export class BrandsController {
   /**
    * Controller to update a brand
    */
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a brand' })
   @ApiOkResponse({ type: BrandModel, description: 'Brand updated' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @UseGuards(AuthGuard, AdminGuard)
   @Patch(':id')
   async update(@Param() id: string, @Body() updateBrandDto: UpdateBrandDto): Promise<BrandModel> {
     return this.brandsService.update(id, updateBrandDto);
@@ -76,10 +78,12 @@ export class BrandsController {
   /**
    * Controller to delete a brand
    */
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a brand' })
   @ApiOkResponse({ type: BrandModel, description: 'Brand deleted' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @UseGuards(AuthGuard, AdminGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<BrandModel> {
     return this.brandsService.delete(id);

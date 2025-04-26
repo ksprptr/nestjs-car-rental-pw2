@@ -28,6 +28,7 @@ export class CountriesService {
     updatedAt: true,
     addresses: false,
     _count: false,
+    brands: false,
   };
 
   /**

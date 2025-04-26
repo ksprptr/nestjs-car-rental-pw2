@@ -18,7 +18,7 @@ export class AuthController {
    * Login controller
    */
   @ApiOperation({ summary: 'Login a user' })
-  @ApiOkResponse({ type: TokenModel, description: 'User logged in successfully' })
+  @ApiOkResponse({ type: TokenModel, description: 'User logged in' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Invalid credentials' })
   @HttpCode(200)
   @Post('login')
@@ -30,7 +30,7 @@ export class AuthController {
    * Register controller
    */
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiOkResponse({ type: TokenModel, description: 'User registered successfully' })
+  @ApiOkResponse({ type: TokenModel, description: 'User registered' })
   @HttpCode(200)
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<TokenModel> {

@@ -1,6 +1,7 @@
 import { Prisma } from 'prisma/generated/prisma';
 import { AddressModel } from 'src/utils/models/address.model';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CountriesService } from 'src/countries/countries.service';
 import { CreateAddressDto } from 'src/utils/dto/addresses-dto/create-address.dto';
 import { UpdateAddressDto } from 'src/utils/dto/addresses-dto/update-address.dto';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
@@ -10,14 +11,19 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
  */
 @Injectable()
 export class AddressesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly countriesService: CountriesService,
+  ) {}
 
   // Selection object for address
   public readonly addressSelect: Prisma.AddressSelect = {
     id: true,
     city: true,
     countryId: false,
-    country: true,
+    country: {
+      select: this.countriesService.countrySelect,
+    },
     zip: true,
     streetName: true,
     streetNumber: true,

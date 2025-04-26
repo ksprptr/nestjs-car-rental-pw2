@@ -65,4 +65,18 @@ export class UserModel {
     enum: Role,
   })
   role: Role;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "User's created at date",
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "User's updated at date",
+  })
+  updatedAt: Date;
 }
