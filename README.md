@@ -1,4 +1,4 @@
-<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo.svg" width="240" alt="Nest Logo" /></a>
+<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo.svg" width="220" alt="Nest Logo" /></a>
 
 # Car Rental API - NestJS
 
