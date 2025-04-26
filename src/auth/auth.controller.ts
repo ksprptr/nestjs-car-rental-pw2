@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from 'src/utils/dto/auth-dto/register.dto';
 import { BasicStatusResponse } from 'src/utils/models/response.model';
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 /**
  * Class representing an auth controller

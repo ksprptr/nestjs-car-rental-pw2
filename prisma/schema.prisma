@@ -85,8 +85,8 @@ model Vehicle {
   priceUsd     Float
   attributes   VehicleAttributes @relation(fields: [attributesId], references: [id])
   attributesId String            @unique
-  mark         Mark              @relation(fields: [markId], references: [id])
-  markId       String
+  brand        Brand             @relation(fields: [brandId], references: [id])
+  brandId      String
   color        Color             @relation(fields: [colorId], references: [id])
   colorId      String
   users        UserVehicle[]
@@ -106,9 +106,9 @@ model VehicleAttributes {
   vehicle         Vehicle?
 }
 
-model Mark {
+model Brand {
   id          String    @id @default(uuid())
-  name        String
+  name        String    @unique
   foundedYear Int
   description String
   country     Country   @relation(fields: [countryId], references: [id])
@@ -121,7 +121,7 @@ model Mark {
 model Color {
   id              String    @id @default(uuid())
   name            String
-  hex             String
+  hex             String    @unique
   brightnessLevel Int
   metallic        Boolean
   vehicles        Vehicle[]
@@ -132,11 +132,11 @@ model Color {
 model Country {
   id         String    @id @default(uuid())
   name       String
-  isoCode    String
+  isoCode    String    @unique
   continent  Continent
   population Int
   addresses  Address[]
-  marks      Mark[]
+  brands     Brand[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }

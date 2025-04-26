@@ -1,4 +1,6 @@
+import { Continent } from 'prisma/generated/prisma';
 import { ApiProperty } from '@nestjs/swagger';
+import { CountryModel } from './country.model';
 
 /**
  * Class representing an address model
@@ -19,11 +21,19 @@ export class AddressModel {
   city: string;
 
   @ApiProperty({
-    type: 'string',
-    example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
+    type: () => CountryModel,
+    example: {
+      id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
+      name: 'United States',
+      isoCode: 'US',
+      continent: Continent.NORTH_AMERICA,
+      population: 100,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     description: "Address's country",
   })
-  countryId: string;
+  country: CountryModel;
 
   @ApiProperty({
     type: 'string',
@@ -45,4 +55,18 @@ export class AddressModel {
     description: "Address's street number",
   })
   streetNumber: string;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "Address's created at date",
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "Address's updated at date",
+  })
+  updatedAt: Date;
 }

@@ -1,12 +1,8 @@
-import { FullMark } from './mark.types';
-import { ColorWithoutTimestamps } from './color.types';
-import { Vehicle, VehicleAttributes } from 'prisma/generated/prisma';
+import { FullBrand } from './brand.types';
+import { Color, Vehicle, VehicleAttributes } from 'prisma/generated/prisma';
 
-export type FullVehicle = Omit<
-  Vehicle,
-  'attributesId' | 'markId' | 'colorId' | 'createdAt' | 'updatedAt'
-> & {
+export type FullVehicle = Omit<Vehicle, 'attributesId' | 'brandId' | 'colorId'> & {
   attributes: VehicleAttributes;
-  mark: FullMark;
-  color: ColorWithoutTimestamps;
+  brand: FullBrand;
+  color: Color;
 };

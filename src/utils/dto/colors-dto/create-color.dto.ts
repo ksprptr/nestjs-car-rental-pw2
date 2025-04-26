@@ -1,21 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsHexColor, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 /**
- * Class representing a color model
+ * Class representing a create color dto
  */
-export class ColorModel {
-  @ApiProperty({
-    type: 'string',
-    example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-    description: 'Color ID',
-  })
-  id: string;
-
+export class CreateColorDto {
   @ApiProperty({
     type: 'string',
     example: 'Black',
     description: "Color's name",
   })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
   @ApiProperty({
@@ -23,6 +19,8 @@ export class ColorModel {
     example: '#000000',
     description: "Color's hex code",
   })
+  @IsHexColor()
+  @IsNotEmpty()
   hex: string;
 
   @ApiProperty({
@@ -30,6 +28,8 @@ export class ColorModel {
     example: 100,
     description: "Color's brightness level (0-100)",
   })
+  @IsNumber()
+  @IsNotEmpty()
   brightnessLevel: number;
 
   @ApiProperty({
@@ -37,19 +37,7 @@ export class ColorModel {
     example: false,
     description: "Color's is metallic",
   })
+  @IsBoolean()
+  @IsNotEmpty()
   metallic: boolean;
-
-  @ApiProperty({
-    type: 'string',
-    example: new Date(),
-    description: "Color's created at date",
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    type: 'string',
-    example: new Date(),
-    description: "Color's updated at date",
-  })
-  updatedAt: Date;
 }

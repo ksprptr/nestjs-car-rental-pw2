@@ -1,6 +1,3 @@
-import { Address } from 'prisma/generated/prisma';
-import { CountryWithoutTimestamps } from './country.types';
+import { Address, Country } from 'prisma/generated/prisma';
 
-export type FullAddress = Omit<Address, 'countryId' | 'createdAt' | 'updatedAt'> & {
-  country: CountryWithoutTimestamps;
-};
+export type FullAddress = Omit<Address, 'countryId'> & { country: Country };

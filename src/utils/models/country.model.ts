@@ -40,4 +40,18 @@ export class CountryModel {
     description: "Country's population",
   })
   population: number;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "Country's created at date",
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    type: 'string',
+    example: new Date(),
+    description: "Country's updated at date",
+  })
+  updatedAt: Date;
 }
