@@ -1,4 +1,4 @@
 import { User } from 'prisma/generated/prisma';
 import { FullAddress } from './address.types';
 
-export type FullUser = Omit<User, 'password' | 'addressId'> & { address: FullAddress };
+export type FrontendUser = Omit<User, 'password' | 'addressId'> & { address: FullAddress };

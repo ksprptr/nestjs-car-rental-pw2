@@ -52,6 +52,8 @@ model User {
   vehicles  UserVehicle[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+
+  @@map("users")
 }
 
 model Address {
@@ -65,6 +67,8 @@ model Address {
   users        User[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@map("addresses")
 }
 
 model UserVehicle {
@@ -77,6 +81,8 @@ model UserVehicle {
   dateTo    DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("user_vehicles")
 }
 
 model Vehicle {
@@ -92,6 +98,8 @@ model Vehicle {
   users        UserVehicle[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+
+  @@map("vehicles")
 }
 
 model VehicleAttributes {
@@ -104,6 +112,8 @@ model VehicleAttributes {
   transmission    Transmission
   mileage         Int
   vehicle         Vehicle?
+
+  @@map("vehicle_attributes")
 }
 
 model Brand {
@@ -116,6 +126,8 @@ model Brand {
   vehicles    Vehicle[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@map("brands")
 }
 
 model Color {
@@ -127,6 +139,8 @@ model Color {
   vehicles        Vehicle[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  @@map("colors")
 }
 
 model Country {
@@ -139,4 +153,6 @@ model Country {
   brands     Brand[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+
+  @@map("countries")
 }

@@ -1,10 +1,27 @@
 import { LoginDto } from 'src/utils/dto/auth-dto/login.dto';
-import { TokenModel } from 'src/utils/models/token.model';
+import { AuthGuard } from './guards/auth.guard';
+import { UserModel } from 'src/utils/models/user.model';
 import { AuthService } from './auth.service';
+import { TokensModel } from 'src/utils/models/tokens.model';
 import { RegisterDto } from 'src/utils/dto/auth-dto/register.dto';
 import { BasicStatusResponse } from 'src/utils/models/response.model';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import {
+  Get,
+  Req,
+  Body,
+  Post,
+  HttpCode,
+  UseGuards,
+  Controller,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 /**
  * Class representing an auth controller
@@ -15,25 +32,64 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
-   * Login controller
+   * Controller to login a user
    */
   @ApiOperation({ summary: 'Login a user' })
-  @ApiOkResponse({ type: TokenModel, description: 'User logged in' })
+  @ApiOkResponse({ type: TokensModel, description: 'User logged in' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Invalid credentials' })
   @HttpCode(200)
   @Post('login')
-  async login(@Body() loginDto: LoginDto): Promise<TokenModel> {
+  async login(@Body() loginDto: LoginDto): Promise<TokensModel> {
     return this.authService.login(loginDto);
   }
 
   /**
-   * Register controller
+   * Controller to register a new user
    */
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiOkResponse({ type: TokenModel, description: 'User registered' })
+  @ApiOkResponse({ type: TokensModel, description: 'User registered' })
   @HttpCode(200)
   @Post('register')
-  async register(@Body() registerDto: RegisterDto): Promise<TokenModel> {
+  async register(@Body() registerDto: RegisterDto): Promise<TokensModel> {
     return this.authService.register(registerDto);
+  }
+
+  /**
+   * Controller to refresh a token
+   */
+  @ApiOperation({ summary: 'Refresh a token' })
+  @ApiOkResponse({ type: TokensModel, description: 'Token refreshed' })
+  @HttpCode(200)
+  @UseGuards(AuthGuard)
+  @Post('refresh')
+  async refreshToken(@Req() request: Request): Promise<TokensModel> {
+    const refreshToken = request.headers['x-refresh-token'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    return this.authService.refreshToken(refreshToken);
+  }
+
+  /**
+   * Controller to get a user by token
+   */
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get currently signed in user' })
+  @ApiOkResponse({ type: UserModel, description: 'User found' })
+  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Invalid token' })
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getMe(@Req() request: Request): Promise<UserModel> {
+    const payload = request['user'];
+
+    if (!payload) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const { exp: _exp, iat: _iat, ...user } = payload;
+
+    return user;
   }
 }

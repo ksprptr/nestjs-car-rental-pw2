@@ -1,12 +1,11 @@
 import { Role } from 'prisma/generated/prisma';
-import { FullUser } from 'src/utils/types/user.types';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserModel } from 'src/utils/models/user.model';
 import { AdminGuard } from 'src/auth/guards/admin.guard';
 import { UsersService } from './users.service';
+import { FrontendUser } from 'src/utils/types/user.types';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
-import { Request as ERequest } from 'express';
 import { BasicStatusResponse } from 'src/utils/models/response.model';
 import {
   ApiTags,
@@ -19,12 +18,12 @@ import {
 } from '@nestjs/swagger';
 import {
   Get,
+  Req,
   Body,
   Post,
   Param,
   Patch,
   Delete,
-  Request,
   UseGuards,
   Controller,
   ForbiddenException,
@@ -91,9 +90,9 @@ export class UsersController {
   async update(
     @Param() id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() request: ERequest,
+    @Req() request: Request,
   ): Promise<UserModel> {
-    const user: FullUser = request['user'];
+    const user: FrontendUser = request['user'];
 
     if (user.id !== id && user.role !== Role.ADMIN) {
       throw new ForbiddenException('You are not allowed to update this user');
@@ -112,8 +111,8 @@ export class UsersController {
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string, @Request() request: ERequest): Promise<UserModel> {
-    const user: FullUser = request['user'];
+  async delete(@Param('id') id: string, @Req() request: Request): Promise<UserModel> {
+    const user: FrontendUser = request['user'];
 
     if (user.id !== id && user.role !== Role.ADMIN) {
       throw new ForbiddenException('You are not allowed to delete this user');

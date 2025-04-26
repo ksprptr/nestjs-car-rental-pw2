@@ -32,7 +32,14 @@ export class AuthGuard {
    * Function to extract token from the request headers
    */
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const token = request.headers.authorization;
+
+    if (token) {
+      if (!token.startsWith('Bearer ')) {
+        throw new UnauthorizedException("Invalid token format. Expected 'Bearer <token>'");
+      }
+
+      return token.split(' ')[1];
+    }
   }
 }

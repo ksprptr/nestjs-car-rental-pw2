@@ -1,5 +1,5 @@
 import { UserModel } from 'src/utils/models/user.model';
-import { Prisma, Role } from 'prisma/generated/prisma';
+import { Prisma, Role, User } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
@@ -10,6 +10,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import ctx from 'src/ctx';
 
 /**
  * Class representing a users service
@@ -63,6 +64,13 @@ export class UsersService {
   }
 
   /**
+   * Function to get a user by email
+   */
+  async getByEmail(email: string): Promise<User | null> {
+    return await this.prismaService.user.findUnique({ where: { email } });
+  }
+
+  /**
    * Function to create a new user
    */
   async create(createUserDto: CreateUserDto): Promise<UserModel> {
@@ -73,7 +81,10 @@ export class UsersService {
     try {
       const newUser = await this.prismaService.user.create({
         data: {
-          ...createUserDto,
+          firstName: createUserDto.firstName,
+          lastName: createUserDto.lastName,
+          email: createUserDto.email,
+          password: await ctx.functions.password.hash(createUserDto.password),
           role: Role.USER,
         },
         select: this.userSelect,
