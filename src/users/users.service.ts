@@ -1,5 +1,8 @@
 import ctx from 'src/ctx';
 import { UserModel } from 'src/utils/models/user.model';
+import { VehicleModel } from 'src/utils/models/vehicle.model';
+import { BrandsService } from 'src/brands/brands.service';
+import { ColorsService } from 'src/colors/colors.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
@@ -20,6 +23,8 @@ export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly addressesService: AddressesService,
+    private readonly brandsService: BrandsService,
+    private readonly colorsService: ColorsService,
   ) {}
 
   public readonly userSelect: Prisma.UserSelect = {
@@ -37,6 +42,28 @@ export class UsersService {
     updatedAt: true,
     _count: false,
     vehicles: false,
+  };
+
+  public readonly vehicleSelect: Prisma.VehicleSelect = {
+    id: true,
+    model: true,
+    priceUsd: true,
+    attributes: true,
+    attributesId: false,
+    brand: {
+      select: this.brandsService.brandSelect,
+    },
+    brandId: false,
+    color: {
+      select: this.colorsService.colorSelect,
+    },
+    colorId: false,
+    createdAt: true,
+    updatedAt: true,
+    owner: false,
+    ownerId: false,
+    _count: false,
+    favouritedByUsers: false,
   };
 
   /**
@@ -65,6 +92,47 @@ export class UsersService {
    */
   async getByEmail(email: string): Promise<User | null> {
     return await this.prismaService.user.findUnique({ where: { email } });
+  }
+
+  /**
+   * Function to get a user's vehicles
+   */
+  async getUserVehicles(id: string): Promise<VehicleModel[]> {
+    return await this.prismaService.vehicle.findMany({
+      where: { ownerId: id },
+      select: {
+        ...this.vehicleSelect,
+      },
+    });
+  }
+
+  /**
+   * Function to get a user's vehicle by id
+   */
+  async getUserVehicle(userId: string, vehicleId: string): Promise<VehicleModel> {
+    const vehicle = await this.prismaService.vehicle.findFirst({
+      where: { id: vehicleId, ownerId: userId },
+      select: this.vehicleSelect,
+    });
+
+    if (!vehicle) throw new NotFoundException('Vehicle not found');
+
+    return vehicle;
+  }
+
+  /**
+   * Function to get a user's favourite vehicles
+   */
+  async getUserFavouriteVehicles(id: string): Promise<VehicleModel[]> {
+    const vehicleIds = await this.prismaService.userFavouriteVehicle.findMany({
+      where: { userId: id },
+      select: { vehicleId: true },
+    });
+
+    return await this.prismaService.vehicle.findMany({
+      where: { id: { in: vehicleIds.map((vehicle) => vehicle.vehicleId) } },
+      select: this.vehicleSelect,
+    });
   }
 
   /**

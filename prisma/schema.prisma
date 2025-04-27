@@ -19,7 +19,7 @@ enum Role {
   USER
 }
 
-enum Fuel {
+enum FuelType {
   BENZINE
   DIESEL
   ELECTRO
@@ -41,17 +41,18 @@ enum Continent {
 }
 
 model User {
-  id        String        @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String        @unique
-  password  String
-  role      Role
-  address   Address?      @relation(fields: [addressId], references: [id])
-  addressId String?
-  vehicles  UserVehicle[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id                String                 @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String                 @unique
+  password          String
+  role              Role
+  address           Address?               @relation(fields: [addressId], references: [id])
+  addressId         String?
+  vehicles          Vehicle[]
+  favouriteVehicles UserFavouriteVehicle[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
   @@map("users")
 }
@@ -71,33 +72,33 @@ model Address {
   @@map("addresses")
 }
 
-model UserVehicle {
-  id        String   @id @default(uuid())
+model UserFavouriteVehicle {
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
   vehicleId String
-  dateFrom  DateTime
-  dateTo    DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("user_vehicles")
+  @@id([userId, vehicleId])
+  @@map("user_favourite_vehicles")
 }
 
 model Vehicle {
-  id           String            @id @default(uuid())
-  model        String
-  priceUsd     Float
-  attributes   VehicleAttributes @relation(fields: [attributesId], references: [id])
-  attributesId String            @unique
-  brand        Brand             @relation(fields: [brandId], references: [id])
-  brandId      String
-  color        Color             @relation(fields: [colorId], references: [id])
-  colorId      String
-  users        UserVehicle[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id                String                 @id @default(uuid())
+  owner             User                   @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  model             String
+  priceUsd          Float
+  attributes        VehicleAttributes      @relation(fields: [attributesId], references: [id])
+  attributesId      String                 @unique
+  brand             Brand                  @relation(fields: [brandId], references: [id])
+  brandId           String
+  color             Color                  @relation(fields: [colorId], references: [id])
+  colorId           String
+  favouritedByUsers UserFavouriteVehicle[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
 
   @@map("vehicles")
 }
@@ -108,7 +109,7 @@ model VehicleAttributes {
   seatCount       Int
   topSpeedMph     Int
   fuelConsumption Float
-  fuel            Fuel
+  fuelType        FuelType
   transmission    Transmission
   mileage         Int
   vehicle         Vehicle?

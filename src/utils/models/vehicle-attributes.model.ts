@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Fuel, Transmission } from 'prisma/generated/prisma';
+import { FuelType, Transmission } from 'prisma/generated/prisma';
 
 /**
  * Class representing a vehicle attributes model
@@ -42,11 +42,11 @@ export class VehicleAttributesModel {
 
   @ApiProperty({
     type: 'string',
-    example: Fuel.BENZINE,
+    example: FuelType.BENZINE,
     description: "Vehicle's fuel type",
-    enum: Fuel,
+    enum: FuelType,
   })
-  fuel: Fuel;
+  fuelType: FuelType;
 
   @ApiProperty({
     type: 'string',

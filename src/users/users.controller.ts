@@ -4,6 +4,7 @@ import { UserModel } from 'src/utils/models/user.model';
 import { AccessGuard } from 'src/auth/guards/access.guard';
 import { UsersService } from './users.service';
 import { FrontendUser } from 'src/utils/types/user.types';
+import { VehicleModel } from 'src/utils/models/vehicle.model';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
 import { BasicStatusResponse } from 'src/utils/models/response.model';
@@ -59,6 +60,45 @@ export class UsersController {
   @Get(':id')
   async get(@Param('id') id: string): Promise<UserModel> {
     return this.usersService.get(id);
+  }
+
+  /**
+   * Controller to get a user's vehicles
+   */
+  @ApiOperation({ summary: "Get a user's vehicles" })
+  @ApiOkResponse({ type: [VehicleModel], description: "User's vehicles" })
+  @Get(':id/vehicles')
+  async getUserVehicles(@Param('id') id: string): Promise<VehicleModel[]> {
+    return this.usersService.getUserVehicles(id);
+  }
+
+  /**
+   * Controller to get a user's vehicle by id
+   */
+  @ApiOperation({ summary: "Get a user's vehicle by id" })
+  @ApiOkResponse({ type: VehicleModel, description: "User's vehicle" })
+  @Get(':userId/vehicles/:vehicleId')
+  async getUserVehicle(
+    @Param('userId') userId: string,
+    @Param('vehicleId') vehicleId: string,
+  ): Promise<VehicleModel> {
+    return this.usersService.getUserVehicle(userId, vehicleId);
+  }
+
+  /**
+   * Controller to get a currently logged in user's favourite vehicles
+   */
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get my favourite vehicles' })
+  @ApiOkResponse({ type: [VehicleModel], description: "User's favourite vehicles" })
+  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
+  @UseGuards(AuthGuard)
+  @Get('/me/favourite-vehicles')
+  async getUserFavouriteVehicles(@Req() request: Request): Promise<VehicleModel[]> {
+    const user: FrontendUser = request['user'];
+    const id = user.id;
+
+    return this.usersService.getUserFavouriteVehicles(id);
   }
 
   /**

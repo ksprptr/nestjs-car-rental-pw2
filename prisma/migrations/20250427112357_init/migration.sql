@@ -1,63 +1,14 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
 
-  - You are about to drop the `Address` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Brand` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Color` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Country` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `UserVehicle` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Vehicle` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `VehicleAttributes` table. If the table is not empty, all the data it contains will be lost.
+-- CreateEnum
+CREATE TYPE "FuelType" AS ENUM ('BENZINE', 'DIESEL', 'ELECTRO');
 
-*/
--- DropForeignKey
-ALTER TABLE "Address" DROP CONSTRAINT "Address_countryId_fkey";
+-- CreateEnum
+CREATE TYPE "Transmission" AS ENUM ('AUTOMATIC', 'MANUAL');
 
--- DropForeignKey
-ALTER TABLE "Brand" DROP CONSTRAINT "Brand_countryId_fkey";
-
--- DropForeignKey
-ALTER TABLE "User" DROP CONSTRAINT "User_addressId_fkey";
-
--- DropForeignKey
-ALTER TABLE "UserVehicle" DROP CONSTRAINT "UserVehicle_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "UserVehicle" DROP CONSTRAINT "UserVehicle_vehicleId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Vehicle" DROP CONSTRAINT "Vehicle_attributesId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Vehicle" DROP CONSTRAINT "Vehicle_brandId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Vehicle" DROP CONSTRAINT "Vehicle_colorId_fkey";
-
--- DropTable
-DROP TABLE "Address";
-
--- DropTable
-DROP TABLE "Brand";
-
--- DropTable
-DROP TABLE "Color";
-
--- DropTable
-DROP TABLE "Country";
-
--- DropTable
-DROP TABLE "User";
-
--- DropTable
-DROP TABLE "UserVehicle";
-
--- DropTable
-DROP TABLE "Vehicle";
-
--- DropTable
-DROP TABLE "VehicleAttributes";
+-- CreateEnum
+CREATE TYPE "Continent" AS ENUM ('AFRICA', 'ANTARCTICA', 'ASIA', 'EUROPE', 'NORTH_AMERICA', 'SOUTH_AMERICA', 'AUSTRALIA');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -89,21 +40,19 @@ CREATE TABLE "addresses" (
 );
 
 -- CreateTable
-CREATE TABLE "user_vehicles" (
-    "id" TEXT NOT NULL,
+CREATE TABLE "user_favourite_vehicles" (
     "userId" TEXT NOT NULL,
     "vehicleId" TEXT NOT NULL,
-    "dateFrom" TIMESTAMP(3) NOT NULL,
-    "dateTo" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "user_vehicles_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "user_favourite_vehicles_pkey" PRIMARY KEY ("userId","vehicleId")
 );
 
 -- CreateTable
 CREATE TABLE "vehicles" (
     "id" TEXT NOT NULL,
+    "ownerId" TEXT NOT NULL,
     "model" TEXT NOT NULL,
     "priceUsd" DOUBLE PRECISION NOT NULL,
     "attributesId" TEXT NOT NULL,
@@ -122,7 +71,7 @@ CREATE TABLE "vehicle_attributes" (
     "seatCount" INTEGER NOT NULL,
     "topSpeedMph" INTEGER NOT NULL,
     "fuelConsumption" DOUBLE PRECISION NOT NULL,
-    "fuel" "Fuel" NOT NULL,
+    "fuelType" "FuelType" NOT NULL,
     "transmission" "Transmission" NOT NULL,
     "mileage" INTEGER NOT NULL,
 
@@ -190,10 +139,13 @@ ALTER TABLE "users" ADD CONSTRAINT "users_addressId_fkey" FOREIGN KEY ("addressI
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_countryId_fkey" FOREIGN KEY ("countryId") REFERENCES "countries"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_vehicles" ADD CONSTRAINT "user_vehicles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_favourite_vehicles" ADD CONSTRAINT "user_favourite_vehicles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_vehicles" ADD CONSTRAINT "user_vehicles_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "vehicles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_favourite_vehicles" ADD CONSTRAINT "user_favourite_vehicles_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "vehicles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "vehicles" ADD CONSTRAINT "vehicles_attributesId_fkey" FOREIGN KEY ("attributesId") REFERENCES "vehicle_attributes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

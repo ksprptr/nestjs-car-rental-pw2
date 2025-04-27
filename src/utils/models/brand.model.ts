@@ -33,7 +33,7 @@ export class BrandModel {
     },
     description: "Brand's country",
   })
-  country: CountryModel;
+  country?: CountryModel;
 
   @ApiProperty({
     type: 'number',
