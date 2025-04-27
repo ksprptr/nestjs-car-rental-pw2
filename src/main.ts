@@ -18,7 +18,12 @@ async function bootstrap() {
     methods: 'GET,HEAD,PATCH,POST,DELETE,OPTIONS',
   });
 
-  const config = new DocumentBuilder().setTitle('Car Rental API').setVersion('1.0').build();
+  const config = new DocumentBuilder()
+    .setTitle('Car Rental API')
+    .setDescription('Backend API for car rental management, including users, vehicles, and more.')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory());
 

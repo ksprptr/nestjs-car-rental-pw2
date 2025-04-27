@@ -17,7 +17,6 @@ import {
 export class CountriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  // Selection object for a country
   public readonly countrySelect: Prisma.CountrySelect = {
     id: true,
     name: true,
@@ -32,6 +31,13 @@ export class CountriesService {
   };
 
   /**
+   * Function to get all countries
+   */
+  async getAll(): Promise<CountryModel[]> {
+    return await this.prismaService.country.findMany({ select: this.countrySelect });
+  }
+
+  /**
    * Function to get a country by id
    */
   async get(id: string): Promise<CountryModel> {
@@ -40,18 +46,9 @@ export class CountriesService {
       select: this.countrySelect,
     });
 
-    if (!country) {
-      throw new NotFoundException('Country not found');
-    }
+    if (!country) throw new NotFoundException('Country not found');
 
     return country;
-  }
-
-  /**
-   * Function to get all countries
-   */
-  async getAll(): Promise<CountryModel[]> {
-    return await this.prismaService.country.findMany({ select: this.countrySelect });
   }
 
   /**

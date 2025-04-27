@@ -1,3 +1,3 @@
 import { Address, Country } from 'prisma/generated/prisma';
 
-export type FullAddress = Omit<Address, 'countryId'> & { country: Country };
+export type FrontendAddress = Omit<Address, 'countryId'> & { country: Country };

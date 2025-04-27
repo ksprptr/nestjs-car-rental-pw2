@@ -16,7 +16,6 @@ export class AddressesService {
     private readonly countriesService: CountriesService,
   ) {}
 
-  // Selection object for address
   public readonly addressSelect: Prisma.AddressSelect = {
     id: true,
     city: true,
@@ -34,6 +33,13 @@ export class AddressesService {
   };
 
   /**
+   * Function to get all addresses
+   */
+  async getAll(): Promise<AddressModel[]> {
+    return await this.prismaService.address.findMany({ select: this.addressSelect });
+  }
+
+  /**
    * Function to get an address by id
    */
   async get(id: string): Promise<AddressModel> {
@@ -42,18 +48,9 @@ export class AddressesService {
       select: this.addressSelect,
     });
 
-    if (!address) {
-      throw new NotFoundException('Address not found');
-    }
+    if (!address) throw new NotFoundException('Address not found');
 
     return address;
-  }
-
-  /**
-   * Function to get all addresses
-   */
-  async getAll(): Promise<AddressModel[]> {
-    return await this.prismaService.address.findMany({ select: this.addressSelect });
   }
 
   /**

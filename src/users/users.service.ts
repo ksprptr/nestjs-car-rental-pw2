@@ -1,16 +1,16 @@
+import ctx from 'src/ctx';
 import { UserModel } from 'src/utils/models/user.model';
-import { Prisma, Role, User } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
 import { AddressesService } from 'src/addresses/addresses.service';
+import { Prisma, Role, User } from 'prisma/generated/prisma';
 import {
   Injectable,
   ConflictException,
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import ctx from 'src/ctx';
 
 /**
  * Class representing a users service
@@ -22,7 +22,6 @@ export class UsersService {
     private readonly addressesService: AddressesService,
   ) {}
 
-  // Selection object for a user
   public readonly userSelect: Prisma.UserSelect = {
     id: true,
     firstName: true,
@@ -41,6 +40,13 @@ export class UsersService {
   };
 
   /**
+   * Function to get all users
+   */
+  async getAll(): Promise<UserModel[]> {
+    return await this.prismaService.user.findMany({ select: this.userSelect });
+  }
+
+  /**
    * Function to get a user by id
    */
   async get(id: string): Promise<UserModel> {
@@ -49,18 +55,9 @@ export class UsersService {
       select: this.userSelect,
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
 
     return user;
-  }
-
-  /**
-   * Function to get all users
-   */
-  async getAll(): Promise<UserModel[]> {
-    return await this.prismaService.user.findMany({ select: this.userSelect });
   }
 
   /**

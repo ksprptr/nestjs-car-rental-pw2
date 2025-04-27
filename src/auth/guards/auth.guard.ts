@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { FrontendUser } from 'src/utils/types/user.types';
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 
 /**
@@ -19,7 +20,10 @@ export class AuthGuard {
     if (!token) throw new UnauthorizedException('Unauthorized');
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, { secret: process.env.JWT_SECRET });
+      const payload: FrontendUser = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException('Unauthorized');

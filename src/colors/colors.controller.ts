@@ -30,7 +30,7 @@ export class ColorsController {
    * Controller to get all colors
    */
   @ApiOperation({ summary: 'Get all colors' })
-  @ApiOkResponse({ type: [ColorModel], description: 'Colors found' })
+  @ApiOkResponse({ type: [ColorModel], description: 'Colors' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get()
@@ -42,7 +42,7 @@ export class ColorsController {
    * Controller to get a color by id
    */
   @ApiOperation({ summary: 'Get a color by id' })
-  @ApiOkResponse({ type: ColorModel, description: 'Color found' })
+  @ApiOkResponse({ type: ColorModel, description: 'Color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get(':id')
@@ -54,7 +54,7 @@ export class ColorsController {
    * Controller to create a new color
    */
   @ApiOperation({ summary: 'Create a new color' })
-  @ApiCreatedResponse({ type: ColorModel, description: 'Color created' })
+  @ApiCreatedResponse({ type: ColorModel, description: 'Created color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()
@@ -66,7 +66,7 @@ export class ColorsController {
    * Controller to update a color
    */
   @ApiOperation({ summary: 'Update a color' })
-  @ApiOkResponse({ type: ColorModel, description: 'Color updated' })
+  @ApiOkResponse({ type: ColorModel, description: 'Updated color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
@@ -81,7 +81,7 @@ export class ColorsController {
    * Controller to delete a color
    */
   @ApiOperation({ summary: 'Delete a color' })
-  @ApiOkResponse({ type: ColorModel, description: 'Color deleted' })
+  @ApiOkResponse({ type: ColorModel, description: 'Deleted color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Delete(':id')

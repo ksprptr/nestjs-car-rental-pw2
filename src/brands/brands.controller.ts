@@ -28,9 +28,7 @@ export class BrandsController {
    * Controller to get all brands
    */
   @ApiOperation({ summary: 'Get all brands' })
-  @ApiOkResponse({ type: [BrandModel], description: 'Brands found' })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiOkResponse({ type: [BrandModel], description: 'Brands' })
   @Get()
   async getAll(): Promise<BrandModel[]> {
     return this.brandsService.getAll();
@@ -40,9 +38,7 @@ export class BrandsController {
    * Controller to get a brand by id
    */
   @ApiOperation({ summary: 'Get a brand by id' })
-  @ApiOkResponse({ type: BrandModel, description: 'Brand found' })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiOkResponse({ type: BrandModel, description: 'Brand' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<BrandModel> {
     return this.brandsService.get(id);
@@ -53,7 +49,7 @@ export class BrandsController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new brand' })
-  @ApiCreatedResponse({ type: BrandModel, description: 'Brand created' })
+  @ApiCreatedResponse({ type: BrandModel, description: 'Created brand' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AccessGuard)
@@ -67,7 +63,7 @@ export class BrandsController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a brand' })
-  @ApiOkResponse({ type: BrandModel, description: 'Brand updated' })
+  @ApiOkResponse({ type: BrandModel, description: 'Updated brand' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AccessGuard)
@@ -84,7 +80,7 @@ export class BrandsController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a brand' })
-  @ApiOkResponse({ type: BrandModel, description: 'Brand deleted' })
+  @ApiOkResponse({ type: BrandModel, description: 'Deleted brand' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AccessGuard)

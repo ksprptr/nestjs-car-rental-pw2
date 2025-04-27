@@ -30,7 +30,7 @@ export class CountriesController {
    * Controller to get all countries
    */
   @ApiOperation({ summary: 'Get all countries' })
-  @ApiOkResponse({ type: [CountryModel], description: 'Countries found' })
+  @ApiOkResponse({ type: [CountryModel], description: 'Countries' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get()
@@ -42,7 +42,7 @@ export class CountriesController {
    * Controller to get a country by id
    */
   @ApiOperation({ summary: 'Get a country by id' })
-  @ApiOkResponse({ type: CountryModel, description: 'Country found' })
+  @ApiOkResponse({ type: CountryModel, description: 'Country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get(':id')
@@ -54,7 +54,7 @@ export class CountriesController {
    * Controller to create a new country
    */
   @ApiOperation({ summary: 'Create a new country' })
-  @ApiCreatedResponse({ type: CountryModel, description: 'Country created' })
+  @ApiCreatedResponse({ type: CountryModel, description: 'Created country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()
@@ -66,7 +66,7 @@ export class CountriesController {
    * Controller to update a country
    */
   @ApiOperation({ summary: 'Update a country' })
-  @ApiOkResponse({ type: CountryModel, description: 'Country updated' })
+  @ApiOkResponse({ type: CountryModel, description: 'Updated country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
@@ -81,7 +81,7 @@ export class CountriesController {
    * Controller to delete a country
    */
   @ApiOperation({ summary: 'Delete a country' })
-  @ApiOkResponse({ type: CountryModel, description: 'Country deleted' })
+  @ApiOkResponse({ type: CountryModel, description: 'Deleted country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Delete(':id')

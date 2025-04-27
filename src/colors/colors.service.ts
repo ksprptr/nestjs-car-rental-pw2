@@ -17,7 +17,6 @@ import {
 export class ColorsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  // Selection object for a color
   public readonly colorSelect: Prisma.ColorSelect = {
     id: true,
     name: true,
@@ -31,6 +30,13 @@ export class ColorsService {
   };
 
   /**
+   * Function to get all colors
+   */
+  async getAll(): Promise<ColorModel[]> {
+    return await this.prismaService.color.findMany({ select: this.colorSelect });
+  }
+
+  /**
    * Function to get a color by id
    */
   async get(id: string): Promise<ColorModel> {
@@ -39,18 +45,9 @@ export class ColorsService {
       select: this.colorSelect,
     });
 
-    if (!color) {
-      throw new NotFoundException('Color not found');
-    }
+    if (!color) throw new NotFoundException('Color not found');
 
     return color;
-  }
-
-  /**
-   * Function to get all colors
-   */
-  async getAll(): Promise<ColorModel[]> {
-    return await this.prismaService.color.findMany({ select: this.colorSelect });
   }
 
   /**

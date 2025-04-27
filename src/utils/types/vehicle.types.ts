@@ -1,8 +1,8 @@
-import { FullBrand } from './brand.types';
+import { FrontendBrand } from './brand.types';
 import { Color, Vehicle, VehicleAttributes } from 'prisma/generated/prisma';
 
-export type FullVehicle = Omit<Vehicle, 'attributesId' | 'brandId' | 'colorId'> & {
+export type FrontendVehicle = Omit<Vehicle, 'attributesId' | 'brandId' | 'colorId'> & {
   attributes: VehicleAttributes;
-  brand: FullBrand;
+  brand: FrontendBrand;
   color: Color;
 };

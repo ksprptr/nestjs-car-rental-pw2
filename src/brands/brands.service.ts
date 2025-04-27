@@ -21,7 +21,6 @@ export class BrandsService {
     private readonly countriesService: CountriesService,
   ) {}
 
-  // Selection object for a brand
   public readonly brandSelect: Prisma.BrandSelect = {
     id: true,
     name: true,
@@ -38,6 +37,13 @@ export class BrandsService {
   };
 
   /**
+   * Function to get all brands
+   */
+  async getAll(): Promise<BrandModel[]> {
+    return await this.prismaService.brand.findMany({ select: this.brandSelect });
+  }
+
+  /**
    * Function to get a brand by id
    */
   async get(id: string): Promise<BrandModel> {
@@ -46,18 +52,9 @@ export class BrandsService {
       select: this.brandSelect,
     });
 
-    if (!brand) {
-      throw new NotFoundException('Brand not found');
-    }
+    if (!brand) throw new NotFoundException('Brand not found');
 
     return brand;
-  }
-
-  /**
-   * Function to get all brands
-   */
-  async getAll(): Promise<BrandModel[]> {
-    return await this.prismaService.brand.findMany({ select: this.brandSelect });
   }
 
   /**

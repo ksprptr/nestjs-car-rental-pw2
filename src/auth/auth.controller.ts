@@ -57,17 +57,17 @@ export class AuthController {
   /**
    * Controller to refresh a token
    */
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Refresh a token' })
-  @ApiOkResponse({ type: TokensModel, description: 'Token refreshed' })
+  @ApiOkResponse({ type: TokensModel, description: 'New tokens' })
+  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @HttpCode(200)
   @UseGuards(AuthGuard)
   @Post('refresh')
   async refreshToken(@Req() request: Request): Promise<TokensModel> {
     const refreshToken = request.headers['x-refresh-token'];
 
-    if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token not found');
-    }
+    if (!refreshToken) throw new UnauthorizedException('Refresh token not found');
 
     return this.authService.refreshToken(refreshToken);
   }
@@ -76,17 +76,15 @@ export class AuthController {
    * Controller to get a user by token
    */
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get currently signed in user' })
-  @ApiOkResponse({ type: UserModel, description: 'User found' })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Invalid token' })
+  @ApiOperation({ summary: 'Get currently logged in user' })
+  @ApiOkResponse({ type: UserModel, description: 'Currently logged in user' })
+  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @UseGuards(AuthGuard)
   @Get('me')
   async getMe(@Req() request: Request): Promise<UserModel> {
     const payload = request['user'];
 
-    if (!payload) {
-      throw new UnauthorizedException('User not found');
-    }
+    if (!payload) throw new UnauthorizedException('User not found');
 
     const { exp: _exp, iat: _iat, ...user } = payload;
 

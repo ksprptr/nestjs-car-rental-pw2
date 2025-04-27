@@ -42,7 +42,7 @@ export class UsersController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all users' })
-  @ApiOkResponse({ type: [UserModel], description: 'Users found' })
+  @ApiOkResponse({ type: [UserModel], description: 'Users' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AccessGuard)
@@ -55,9 +55,7 @@ export class UsersController {
    * Controller to get a user by id
    */
   @ApiOperation({ summary: 'Get a user by id' })
-  @ApiOkResponse({ type: UserModel, description: 'User found' })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiOkResponse({ type: UserModel, description: 'User' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<UserModel> {
     return this.usersService.get(id);
@@ -68,7 +66,7 @@ export class UsersController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiCreatedResponse({ type: UserModel, description: 'User created' })
+  @ApiCreatedResponse({ type: UserModel, description: 'Created user' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard, AccessGuard)
@@ -82,7 +80,7 @@ export class UsersController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a user' })
-  @ApiOkResponse({ type: UserModel, description: 'User updated' })
+  @ApiOkResponse({ type: UserModel, description: 'Updated user' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard)
@@ -106,7 +104,7 @@ export class UsersController {
    */
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a user' })
-  @ApiOkResponse({ type: UserModel, description: 'User deleted' })
+  @ApiOkResponse({ type: UserModel, description: 'Deleted user' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @UseGuards(AuthGuard)

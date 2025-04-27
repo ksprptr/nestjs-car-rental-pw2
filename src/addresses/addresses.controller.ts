@@ -30,7 +30,7 @@ export class AddressesController {
    * Controller to get all addresses
    */
   @ApiOperation({ summary: 'Get all addresses' })
-  @ApiOkResponse({ type: [AddressModel], description: 'Addresses found' })
+  @ApiOkResponse({ type: [AddressModel], description: 'Addresses' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get()
@@ -42,7 +42,7 @@ export class AddressesController {
    * Controller to get an address by id
    */
   @ApiOperation({ summary: 'Get an address by id' })
-  @ApiOkResponse({ type: AddressModel, description: 'Address found' })
+  @ApiOkResponse({ type: AddressModel, description: 'Address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Get(':id')
@@ -54,7 +54,7 @@ export class AddressesController {
    * Controller to create a new address
    */
   @ApiOperation({ summary: 'Create a new address' })
-  @ApiCreatedResponse({ type: AddressModel, description: 'Address created' })
+  @ApiCreatedResponse({ type: AddressModel, description: 'Created address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Post()
@@ -66,7 +66,7 @@ export class AddressesController {
    * Controller to update an address
    */
   @ApiOperation({ summary: 'Update an address' })
-  @ApiOkResponse({ type: AddressModel, description: 'Address updated' })
+  @ApiOkResponse({ type: AddressModel, description: 'Updated address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
@@ -81,7 +81,7 @@ export class AddressesController {
    * Controller to delete an address
    */
   @ApiOperation({ summary: 'Delete an address' })
-  @ApiOkResponse({ type: AddressModel, description: 'Address deleted' })
+  @ApiOkResponse({ type: AddressModel, description: 'Deleted address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Delete(':id')

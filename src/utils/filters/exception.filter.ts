@@ -6,6 +6,9 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/co
  */
 @Catch(HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
+  /**
+   * Function to catch exceptions
+   */
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const status = exception.getStatus();
