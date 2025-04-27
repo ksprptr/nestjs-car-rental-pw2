@@ -2,12 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
-import { BrandsService } from 'src/brands/brands.service';
-import { ColorsService } from 'src/colors/colors.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthController } from './auth.controller';
 import { AddressesService } from 'src/addresses/addresses.service';
-import { CountriesService } from 'src/countries/countries.service';
 
 /**
  * Class representing an auth module
@@ -15,14 +12,6 @@ import { CountriesService } from 'src/countries/countries.service';
 @Module({
   imports: [JwtModule.register({ global: true, secret: process.env.JWT_SECRET })],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    PrismaService,
-    UsersService,
-    AddressesService,
-    CountriesService,
-    BrandsService,
-    ColorsService,
-  ],
+  providers: [AuthService, PrismaService, UsersService, AddressesService],
 })
 export class AuthModule {}

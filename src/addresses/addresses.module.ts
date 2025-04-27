@@ -4,7 +4,7 @@ import { AddressesService } from './addresses.service';
 import { AddressesController } from './addresses.controller';
 
 /**
- * Class representing a addresses module
+ * Class representing an addresses module
  */
 @Module({
   imports: [],

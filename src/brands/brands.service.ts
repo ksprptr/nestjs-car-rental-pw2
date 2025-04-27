@@ -43,26 +43,25 @@ export class BrandsService {
    * Function to create a new brand
    */
   async create(createBrandDto: CreateBrandDto): Promise<BrandModel> {
-    const country = await this.prismaService.country.findUnique({
+    const countryExists = await this.prismaService.country.findUnique({
       where: { id: createBrandDto.countryId },
+      select: { id: true },
     });
 
-    if (!country) throw new NotFoundException('Country not found');
+    if (!countryExists) throw new NotFoundException('Country not found');
 
     try {
-      const newBrand = await this.prismaService.brand.create({
+      return await this.prismaService.brand.create({
         data: createBrandDto,
         select: ctx.selections.brand.brandSelect,
       });
-
-      return newBrand;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Brand with that name already exists');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while creating the brand.',
+        'An unexpected error occurred while creating the brand',
       );
     }
   }
@@ -72,21 +71,20 @@ export class BrandsService {
    */
   async update(id: string, updateBrandDto: UpdateBrandDto): Promise<BrandModel> {
     if (updateBrandDto.countryId) {
-      const country = await this.prismaService.country.findUnique({
+      const countryExists = await this.prismaService.country.findUnique({
         where: { id: updateBrandDto.countryId },
+        select: { id: true },
       });
 
-      if (!country) throw new NotFoundException('Country not found');
+      if (!countryExists) throw new NotFoundException('Country not found');
     }
 
     try {
-      const updatedBrand = await this.prismaService.brand.update({
+      return await this.prismaService.brand.update({
         where: { id },
         data: updateBrandDto,
         select: ctx.selections.brand.brandSelect,
       });
-
-      return updatedBrand;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -99,7 +97,7 @@ export class BrandsService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while updating the brand.',
+        'An unexpected error occurred while updating the brand',
       );
     }
   }
@@ -109,12 +107,10 @@ export class BrandsService {
    */
   async delete(id: string): Promise<BrandModel> {
     try {
-      const deletedBrand = await this.prismaService.brand.delete({
+      return await this.prismaService.brand.delete({
         where: { id },
         select: ctx.selections.brand.brandSelect,
       });
-
-      return deletedBrand;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -127,7 +123,7 @@ export class BrandsService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while deleting the brand.',
+        'An unexpected error occurred while deleting the brand',
       );
     }
   }

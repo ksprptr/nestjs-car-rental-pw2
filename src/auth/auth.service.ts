@@ -5,12 +5,7 @@ import { TokensModel } from 'src/utils/models/tokens.model';
 import { RegisterDto } from 'src/utils/dto/auth-dto/register.dto';
 import { UsersService } from 'src/users/users.service';
 import { FrontendUser } from 'src/utils/types/user.types';
-import {
-  Injectable,
-  ConflictException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 
 /**
  * Class representing an auth service
@@ -82,8 +77,6 @@ export class AuthService {
       if (!user) throw new UnauthorizedException('Invalid refresh token');
 
       const frontendUser = await this.usersService.get(user.id);
-
-      if (!frontendUser) throw new NotFoundException('User not found');
 
       return {
         accessToken: this.jwtService.sign(frontendUser, {

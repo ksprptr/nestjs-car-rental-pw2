@@ -10,6 +10,7 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  ForbiddenException,
   InternalServerErrorException,
 } from '@nestjs/common';
 
@@ -76,21 +77,6 @@ export class UsersService {
   }
 
   /**
-   * Function to get a user's favourite vehicles
-   */
-  async getUserFavouriteVehicles(id: string): Promise<VehicleModel[]> {
-    const vehicleIds = await this.prismaService.userFavouriteVehicle.findMany({
-      where: { userId: id },
-      select: { vehicleId: true },
-    });
-
-    return await this.prismaService.vehicle.findMany({
-      where: { id: { in: vehicleIds.map((vehicle) => vehicle.vehicleId) } },
-      select: ctx.selections.vehicle.vehicleSelect,
-    });
-  }
-
-  /**
    * Function to create a new user
    */
   async create(createUserDto: CreateUserDto): Promise<UserModel> {
@@ -99,7 +85,7 @@ export class UsersService {
     }
 
     try {
-      const newUser = await this.prismaService.user.create({
+      return await this.prismaService.user.create({
         data: {
           firstName: createUserDto.firstName,
           lastName: createUserDto.lastName,
@@ -109,15 +95,13 @@ export class UsersService {
         },
         select: ctx.selections.user.userSelect,
       });
-
-      return newUser;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('User with that email already exists');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while creating the user.',
+        'An unexpected error occurred while creating the user',
       );
     }
   }
@@ -135,18 +119,17 @@ export class UsersService {
 
     if (updateUserDto.addressId) {
       const address = await this.addressesService.get(updateUserDto.addressId);
-
       if (!address) throw new NotFoundException('Address not found');
     }
 
     if (updateUserDto.role && !isAdmin) {
-      throw new ConflictException('You are not allowed to change the user role');
+      throw new ForbiddenException('You are not allowed to change the user role');
     }
 
     try {
       const { passwordConfirmation: _, ...data } = updateUserDto;
 
-      const updatedUser = await this.prismaService.user.update({
+      return await this.prismaService.user.update({
         where: { id },
         data: {
           ...data,
@@ -154,8 +137,6 @@ export class UsersService {
         },
         select: ctx.selections.user.userSelect,
       });
-
-      return updatedUser;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -168,7 +149,7 @@ export class UsersService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while updating the user.',
+        'An unexpected error occurred while updating the user',
       );
     }
   }
@@ -187,19 +168,15 @@ export class UsersService {
       select: { id: true },
     });
 
-    if (user) {
-      if (user.role === Role.ADMIN && admins.length <= 1) {
-        throw new ConflictException('You cannot delete the last admin');
-      }
+    if (user && user.role === Role.ADMIN && admins.length <= 1) {
+      throw new ConflictException('You cannot delete the last admin');
     }
 
     try {
-      const deletedUser = await this.prismaService.user.delete({
+      return await this.prismaService.user.delete({
         where: { id },
         select: ctx.selections.user.userSelect,
       });
-
-      return deletedUser;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -208,13 +185,13 @@ export class UsersService {
 
         if (error.code === 'P2003') {
           throw new ConflictException(
-            'User cannot be deleted because it is referenced by other records in the database. Please remove all references to this user before deleting it.',
+            'User cannot be deleted due to existing references. Remove references before deleting.',
           );
         }
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while deleting the user.',
+        'An unexpected error occurred while deleting the user',
       );
     }
   }

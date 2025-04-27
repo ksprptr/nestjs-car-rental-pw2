@@ -14,8 +14,12 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiCreatedResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 import {
   Get,
@@ -57,6 +61,7 @@ export class UsersController {
    */
   @ApiOperation({ summary: 'Get a user by id' })
   @ApiOkResponse({ type: UserModel, description: 'User' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'User not found' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<UserModel> {
     return this.usersService.get(id);
@@ -77,6 +82,7 @@ export class UsersController {
    */
   @ApiOperation({ summary: "Get a user's vehicle by id" })
   @ApiOkResponse({ type: VehicleModel, description: "User's vehicle" })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Vehicle not found' })
   @Get(':userId/vehicles/:vehicleId')
   async getUserVehicle(
     @Param('userId') userId: string,
@@ -91,8 +97,17 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiCreatedResponse({ type: UserModel, description: 'Created user' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Passwords do not match or user with that email already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while creating the user',
+  })
   @UseGuards(AuthGuard, AccessGuard)
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<UserModel> {
@@ -105,8 +120,21 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a user' })
   @ApiOkResponse({ type: UserModel, description: 'Updated user' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiForbiddenResponse({
+    type: BasicStatusResponse,
+    description: 'You are not allowed to change the user role',
+  })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'User or address not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Passwords do not match or user with that email already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while updating the user',
+  })
   @UseGuards(AuthGuard)
   @Patch(':id')
   async update(
@@ -130,7 +158,16 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete a user' })
   @ApiOkResponse({ type: UserModel, description: 'Deleted user' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'User not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description:
+      'Cannot delete the last admin or user cannot be deleted due to existing references',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while deleting the user',
+  })
   @UseGuards(AuthGuard)
   @Delete(':id')
   async delete(@Param('id') id: string, @Req() request: Request): Promise<UserModel> {

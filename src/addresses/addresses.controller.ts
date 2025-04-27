@@ -12,8 +12,11 @@ import {
   ApiOkResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 
 /**
@@ -45,6 +48,7 @@ export class AddressesController {
   @ApiOkResponse({ type: AddressModel, description: 'Address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Address not found' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<AddressModel> {
     return this.addressesService.get(id);
@@ -55,8 +59,14 @@ export class AddressesController {
    */
   @ApiOperation({ summary: 'Create a new address' })
   @ApiCreatedResponse({ type: AddressModel, description: 'Created address' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Country not found' })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while creating the address',
+  })
   @Post()
   async create(@Body() createAddressDto: CreateAddressDto): Promise<AddressModel> {
     return this.addressesService.create(createAddressDto);
@@ -67,8 +77,14 @@ export class AddressesController {
    */
   @ApiOperation({ summary: 'Update an address' })
   @ApiOkResponse({ type: AddressModel, description: 'Updated address' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Address or country not found' })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while updating the address',
+  })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -84,6 +100,11 @@ export class AddressesController {
   @ApiOkResponse({ type: AddressModel, description: 'Deleted address' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Address not found' })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while deleting the address',
+  })
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<AddressModel> {
     return this.addressesService.delete(id);

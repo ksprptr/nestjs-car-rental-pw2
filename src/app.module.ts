@@ -4,9 +4,9 @@ import { UsersModule } from './users/users.module';
 import { BrandsModule } from './brands/brands.module';
 import { ColorsModule } from './colors/colors.module';
 import { PrismaService } from './prisma/prisma.service';
+import { VehiclesModule } from './vehicles/vehicles.module';
 import { AddressesModule } from './addresses/addresses.module';
 import { CountriesModule } from './countries/countries.module';
-import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
   imports: [

@@ -40,22 +40,21 @@ export class AddressesService {
    * Function to create a new address
    */
   async create(createAddressDto: CreateAddressDto): Promise<AddressModel> {
-    const country = await this.prismaService.country.findUnique({
+    const countryExists = await this.prismaService.country.findUnique({
       where: { id: createAddressDto.countryId },
+      select: { id: true },
     });
 
-    if (!country) throw new NotFoundException('Country not found');
+    if (!countryExists) throw new NotFoundException('Country not found');
 
     try {
-      const newAddress = await this.prismaService.address.create({
+      return await this.prismaService.address.create({
         data: createAddressDto,
         select: ctx.selections.address.addressSelect,
       });
-
-      return newAddress;
     } catch {
       throw new InternalServerErrorException(
-        'An unexpected error occurred while creating the address.',
+        'An unexpected error occurred while creating the address',
       );
     }
   }
@@ -65,28 +64,27 @@ export class AddressesService {
    */
   async update(id: string, updateAddressDto: UpdateAddressDto): Promise<AddressModel> {
     if (updateAddressDto.countryId) {
-      const country = await this.prismaService.country.findUnique({
+      const countryExists = await this.prismaService.country.findUnique({
         where: { id: updateAddressDto.countryId },
+        select: { id: true },
       });
 
-      if (!country) throw new NotFoundException('Country not found');
+      if (!countryExists) throw new NotFoundException('Country not found');
     }
 
     try {
-      const updatedAddress = await this.prismaService.address.update({
+      return await this.prismaService.address.update({
         where: { id },
         data: updateAddressDto,
         select: ctx.selections.address.addressSelect,
       });
-
-      return updatedAddress;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
         throw new NotFoundException('Address not found');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while updating the address.',
+        'An unexpected error occurred while updating the address',
       );
     }
   }
@@ -96,19 +94,17 @@ export class AddressesService {
    */
   async delete(id: string): Promise<AddressModel> {
     try {
-      const deletedAddress = await this.prismaService.address.delete({
+      return await this.prismaService.address.delete({
         where: { id },
         select: ctx.selections.address.addressSelect,
       });
-
-      return deletedAddress;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
         throw new NotFoundException('Address not found');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while deleting the address.',
+        'An unexpected error occurred while deleting the address',
       );
     }
   }

@@ -46,19 +46,17 @@ export class CountriesService {
    */
   async create(createCountryDto: CreateCountryDto): Promise<CountryModel> {
     try {
-      const newCountry = await this.prismaService.country.create({
+      return await this.prismaService.country.create({
         data: createCountryDto,
         select: ctx.selections.country.countrySelect,
       });
-
-      return newCountry;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Country with that iso code already exists');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while creating the country.',
+        'An unexpected error occurred while creating the country',
       );
     }
   }
@@ -68,13 +66,11 @@ export class CountriesService {
    */
   async update(id: string, updateCountryDto: UpdateCountryDto): Promise<CountryModel> {
     try {
-      const updatedCountry = await this.prismaService.country.update({
+      return await this.prismaService.country.update({
         where: { id },
         data: updateCountryDto,
         select: ctx.selections.country.countrySelect,
       });
-
-      return updatedCountry;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -87,7 +83,7 @@ export class CountriesService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while updating the country.',
+        'An unexpected error occurred while updating the country',
       );
     }
   }
@@ -97,12 +93,10 @@ export class CountriesService {
    */
   async delete(id: string): Promise<CountryModel> {
     try {
-      const deletedCountry = await this.prismaService.country.delete({
+      return await this.prismaService.country.delete({
         where: { id },
         select: ctx.selections.country.countrySelect,
       });
-
-      return deletedCountry;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -115,7 +109,7 @@ export class CountriesService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while deleting the country.',
+        'An unexpected error occurred while deleting the country',
       );
     }
   }

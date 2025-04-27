@@ -44,19 +44,17 @@ export class ColorsService {
    */
   async create(createColorDto: CreateColorDto): Promise<ColorModel> {
     try {
-      const newColor = await this.prismaService.color.create({
+      return await this.prismaService.color.create({
         data: createColorDto,
         select: ctx.selections.color.colorSelect,
       });
-
-      return newColor;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Color with that hex value already exists');
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while creating the color.',
+        'An unexpected error occurred while creating the color',
       );
     }
   }
@@ -66,13 +64,11 @@ export class ColorsService {
    */
   async update(id: string, updateColorDto: UpdateColorDto): Promise<ColorModel> {
     try {
-      const updatedColor = await this.prismaService.color.update({
+      return await this.prismaService.color.update({
         where: { id },
         data: updateColorDto,
         select: ctx.selections.color.colorSelect,
       });
-
-      return updatedColor;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -85,7 +81,7 @@ export class ColorsService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while updating the color.',
+        'An unexpected error occurred while updating the color',
       );
     }
   }
@@ -95,12 +91,10 @@ export class ColorsService {
    */
   async delete(id: string): Promise<ColorModel> {
     try {
-      const deletedColor = await this.prismaService.color.delete({
+      return await this.prismaService.color.delete({
         where: { id },
         select: ctx.selections.color.colorSelect,
       });
-
-      return deletedColor;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -113,7 +107,7 @@ export class ColorsService {
       }
 
       throw new InternalServerErrorException(
-        'An unexpected error occurred while deleting the color.',
+        'An unexpected error occurred while deleting the color',
       );
     }
   }

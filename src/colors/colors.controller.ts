@@ -1,6 +1,6 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AccessGuard } from 'src/auth/guards/access.guard';
 import { ColorModel } from 'src/utils/models/color.model';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { ColorsService } from './colors.service';
 import { CreateColorDto } from 'src/utils/dto/colors-dto/create-color.dto';
 import { UpdateColorDto } from 'src/utils/dto/colors-dto/update-color.dto';
@@ -12,8 +12,12 @@ import {
   ApiOkResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 
 /**
@@ -45,6 +49,7 @@ export class ColorsController {
   @ApiOkResponse({ type: ColorModel, description: 'Color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Color not found' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<ColorModel> {
     return this.colorsService.get(id);
@@ -55,8 +60,17 @@ export class ColorsController {
    */
   @ApiOperation({ summary: 'Create a new color' })
   @ApiCreatedResponse({ type: ColorModel, description: 'Created color' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Color with that hex value already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while creating the color',
+  })
   @Post()
   async create(@Body() createColorDto: CreateColorDto): Promise<ColorModel> {
     return this.colorsService.create(createColorDto);
@@ -67,8 +81,18 @@ export class ColorsController {
    */
   @ApiOperation({ summary: 'Update a color' })
   @ApiOkResponse({ type: ColorModel, description: 'Updated color' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Color not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Color with that hex value already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while updating the color',
+  })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -84,6 +108,15 @@ export class ColorsController {
   @ApiOkResponse({ type: ColorModel, description: 'Deleted color' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Color not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Color cannot be deleted because it is in use',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while deleting the color',
+  })
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<ColorModel> {
     return this.colorsService.delete(id);

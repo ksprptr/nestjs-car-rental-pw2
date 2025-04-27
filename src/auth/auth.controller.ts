@@ -9,8 +9,9 @@ import {
   ApiTags,
   ApiOperation,
   ApiOkResponse,
-  ApiUnauthorizedResponse,
   ApiBearerAuth,
+  ApiConflictResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   Get,
@@ -48,6 +49,7 @@ export class AuthController {
    */
   @ApiOperation({ summary: 'Register a new user' })
   @ApiOkResponse({ type: TokensModel, description: 'User registered' })
+  @ApiConflictResponse({ type: BasicStatusResponse, description: 'Passwords do not match' })
   @HttpCode(200)
   @Post('register')
   async register(@Body() registerDto: RegisterDto): Promise<TokensModel> {
@@ -60,7 +62,10 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Refresh a token' })
   @ApiOkResponse({ type: TokensModel, description: 'New tokens' })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
+  @ApiUnauthorizedResponse({
+    type: BasicStatusResponse,
+    description: 'Unauthorized, invalid refresh token or refresh token expired',
+  })
   @HttpCode(200)
   @UseGuards(AuthGuard)
   @Post('refresh')
@@ -82,11 +87,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('me')
   async getMe(@Req() request: Request): Promise<UserModel> {
-    const payload = request['user'];
-
-    if (!payload) throw new UnauthorizedException('User not found');
-
-    const { exp: _exp, iat: _iat, ...user } = payload;
+    const { exp: _exp, iat: _iat, ...user } = request['user'];
 
     return user;
   }

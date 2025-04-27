@@ -1,6 +1,6 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AccessGuard } from 'src/auth/guards/access.guard';
 import { BrandModel } from 'src/utils/models/brand.model';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from 'src/utils/dto/brands-dto/create-brand.dto';
 import { UpdateBrandDto } from 'src/utils/dto/brands-dto/update-brand.dto';
@@ -12,8 +12,12 @@ import {
   ApiOkResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 
 /**
@@ -39,6 +43,7 @@ export class BrandsController {
    */
   @ApiOperation({ summary: 'Get a brand by id' })
   @ApiOkResponse({ type: BrandModel, description: 'Brand' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Brand not found' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<BrandModel> {
     return this.brandsService.get(id);
@@ -50,8 +55,18 @@ export class BrandsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new brand' })
   @ApiCreatedResponse({ type: BrandModel, description: 'Created brand' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Country not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Brand with that name already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while creating the brand',
+  })
   @UseGuards(AuthGuard, AccessGuard)
   @Post()
   async create(@Body() createBrandDto: CreateBrandDto): Promise<BrandModel> {
@@ -64,8 +79,18 @@ export class BrandsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a brand' })
   @ApiOkResponse({ type: BrandModel, description: 'Updated brand' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Brand or country not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Brand with that name already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while updating the brand',
+  })
   @UseGuards(AuthGuard, AccessGuard)
   @Patch(':id')
   async update(
@@ -83,6 +108,15 @@ export class BrandsController {
   @ApiOkResponse({ type: BrandModel, description: 'Deleted brand' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Brand not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Brand cannot be deleted because it is in use',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while deleting the brand',
+  })
   @UseGuards(AuthGuard, AccessGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<BrandModel> {

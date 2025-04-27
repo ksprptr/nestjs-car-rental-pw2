@@ -12,8 +12,12 @@ import {
   ApiOkResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiConflictResponse,
+  ApiNotFoundResponse,
   ApiForbiddenResponse,
+  ApiBadRequestResponse,
   ApiUnauthorizedResponse,
+  ApiInternalServerErrorResponse,
 } from '@nestjs/swagger';
 
 /**
@@ -45,6 +49,7 @@ export class CountriesController {
   @ApiOkResponse({ type: CountryModel, description: 'Country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Country not found' })
   @Get(':id')
   async get(@Param('id') id: string): Promise<CountryModel> {
     return this.countriesService.get(id);
@@ -55,8 +60,17 @@ export class CountriesController {
    */
   @ApiOperation({ summary: 'Create a new country' })
   @ApiCreatedResponse({ type: CountryModel, description: 'Created country' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Country with that iso code already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while creating the country',
+  })
   @Post()
   async create(@Body() createCountryDto: CreateCountryDto): Promise<CountryModel> {
     return this.countriesService.create(createCountryDto);
@@ -67,8 +81,18 @@ export class CountriesController {
    */
   @ApiOperation({ summary: 'Update a country' })
   @ApiOkResponse({ type: CountryModel, description: 'Updated country' })
+  @ApiBadRequestResponse({ type: BasicStatusResponse, description: 'Validation failed' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Country not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Country with that iso code already exists',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while updating the country',
+  })
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -84,6 +108,15 @@ export class CountriesController {
   @ApiOkResponse({ type: CountryModel, description: 'Deleted country' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
+  @ApiNotFoundResponse({ type: BasicStatusResponse, description: 'Country not found' })
+  @ApiConflictResponse({
+    type: BasicStatusResponse,
+    description: 'Country cannot be deleted because it is in use',
+  })
+  @ApiInternalServerErrorResponse({
+    type: BasicStatusResponse,
+    description: 'An unexpected error occurred while deleting the country',
+  })
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<CountryModel> {
     return this.countriesService.delete(id);
