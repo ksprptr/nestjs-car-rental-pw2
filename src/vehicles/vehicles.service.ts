@@ -129,6 +129,16 @@ export class VehiclesService {
         await this.prismaService.vehicleAttributes.delete({ where: { id: attributes.id } });
       }
 
+      const favourites = await this.prismaService.userFavouriteVehicle.findMany({
+        where: { vehicleId },
+      });
+
+      if (favourites.length > 0) {
+        await this.prismaService.userFavouriteVehicle.deleteMany({
+          where: { vehicleId },
+        });
+      }
+
       const vehicle = await this.prismaService.vehicle.delete({
         where: { id: vehicleId, ownerId: userId },
         select: ctx.selections.vehicle.vehicleSelect,

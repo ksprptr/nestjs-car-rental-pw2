@@ -120,7 +120,7 @@ export class UsersController {
       throw new ForbiddenException('Forbidden');
     }
 
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto, user.role === Role.ADMIN);
   }
 
   /**

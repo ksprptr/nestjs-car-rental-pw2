@@ -102,8 +102,14 @@ export class ColorsService {
 
       return deletedColor;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException('Color not found');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('Color not found');
+        }
+
+        if (error.code === 'P2003') {
+          throw new ConflictException('Color cannot be deleted because it is in use');
+        }
       }
 
       throw new InternalServerErrorException(

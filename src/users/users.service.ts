@@ -125,7 +125,7 @@ export class UsersService {
   /**
    * Function to update a user
    */
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserModel> {
+  async update(id: string, updateUserDto: UpdateUserDto, isAdmin: boolean): Promise<UserModel> {
     if (
       (updateUserDto.password || updateUserDto.passwordConfirmation) &&
       updateUserDto.password !== updateUserDto.passwordConfirmation
@@ -136,9 +136,11 @@ export class UsersService {
     if (updateUserDto.addressId) {
       const address = await this.addressesService.get(updateUserDto.addressId);
 
-      if (!address) {
-        throw new NotFoundException('Address not found');
-      }
+      if (!address) throw new NotFoundException('Address not found');
+    }
+
+    if (updateUserDto.role && !isAdmin) {
+      throw new ConflictException('You are not allowed to change the user role');
     }
 
     try {
@@ -146,7 +148,10 @@ export class UsersService {
 
       const updatedUser = await this.prismaService.user.update({
         where: { id },
-        data,
+        data: {
+          ...data,
+          password: await ctx.functions.password.hash(data.password),
+        },
         select: ctx.selections.user.userSelect,
       });
 
@@ -172,6 +177,22 @@ export class UsersService {
    * Function to delete a user
    */
   async delete(id: string): Promise<UserModel> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: { id: true, role: true },
+    });
+
+    const admins = await this.prismaService.user.findMany({
+      where: { role: Role.ADMIN },
+      select: { id: true },
+    });
+
+    if (user) {
+      if (user.role === Role.ADMIN && admins.length <= 1) {
+        throw new ConflictException('You cannot delete the last admin');
+      }
+    }
+
     try {
       const deletedUser = await this.prismaService.user.delete({
         where: { id },
@@ -180,8 +201,16 @@ export class UsersService {
 
       return deletedUser;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException('User not found');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('User not found');
+        }
+
+        if (error.code === 'P2003') {
+          throw new ConflictException(
+            'User cannot be deleted because it is referenced by other records in the database. Please remove all references to this user before deleting it.',
+          );
+        }
       }
 
       throw new InternalServerErrorException(

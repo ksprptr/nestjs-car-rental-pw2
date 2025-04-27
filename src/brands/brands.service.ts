@@ -116,8 +116,14 @@ export class BrandsService {
 
       return deletedBrand;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException('Brand not found');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('Brand not found');
+        }
+
+        if (error.code === 'P2003') {
+          throw new ConflictException('Brand cannot be deleted because it is in use');
+        }
       }
 
       throw new InternalServerErrorException(
