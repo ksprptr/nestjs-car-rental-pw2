@@ -1,0 +1,152 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table users {
+  id String [pk]
+  firstName String [not null]
+  lastName String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role Role [not null]
+  address addresses
+  addressId String
+  vehicles vehicles [not null]
+  favouriteVehicles user_favourite_vehicles [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table addresses {
+  id String [pk]
+  city String [not null]
+  zip String [not null]
+  streetName String [not null]
+  streetNumber String [not null]
+  country countries [not null]
+  countryId String [not null]
+  users users [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table user_favourite_vehicles {
+  user users [not null]
+  userId String [not null]
+  vehicle vehicles [not null]
+  vehicleId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (userId, vehicleId) [pk]
+  }
+}
+
+Table vehicles {
+  id String [pk]
+  owner users [not null]
+  ownerId String [not null]
+  model String [not null]
+  priceUsd Float [not null]
+  brand brands [not null]
+  brandId String [not null]
+  color colors [not null]
+  colorId String [not null]
+  attributes vehicle_attributes
+  favouritedByUsers user_favourite_vehicles [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table vehicle_attributes {
+  id String [pk]
+  vehicle vehicles [not null]
+  vehicleId String [unique, not null]
+  manufactureYear Int [not null]
+  seatCount Int [not null]
+  topSpeedMph Int [not null]
+  fuelConsumption Float [not null]
+  fuelType FuelType [not null]
+  transmission Transmission [not null]
+  mileage Int [not null]
+}
+
+Table brands {
+  id String [pk]
+  name String [unique, not null]
+  foundedYear Int [not null]
+  description String [not null]
+  country countries [not null]
+  countryId String [not null]
+  vehicles vehicles [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table colors {
+  id String [pk]
+  name String [not null]
+  hex String [unique, not null]
+  brightnessLevel Int [not null]
+  metallic Boolean [not null]
+  vehicles vehicles [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table countries {
+  id String [pk]
+  name String [not null]
+  isoCode String [unique, not null]
+  continent Continent [not null]
+  population Int [not null]
+  addresses addresses [not null]
+  brands brands [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Enum Role {
+  ADMIN
+  USER
+}
+
+Enum FuelType {
+  BENZINE
+  DIESEL
+  ELECTRO
+}
+
+Enum Transmission {
+  AUTOMATIC
+  MANUAL
+}
+
+Enum Continent {
+  AFRICA
+  ANTARCTICA
+  ASIA
+  EUROPE
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  AUSTRALIA
+}
+
+Ref: users.addressId > addresses.id
+
+Ref: addresses.countryId > countries.id
+
+Ref: user_favourite_vehicles.userId > users.id
+
+Ref: user_favourite_vehicles.vehicleId > vehicles.id
+
+Ref: vehicles.ownerId > users.id
+
+Ref: vehicles.brandId > brands.id
+
+Ref: vehicles.colorId > colors.id
+
+Ref: vehicle_attributes.vehicleId - vehicles.id
+
+Ref: brands.countryId > countries.id
