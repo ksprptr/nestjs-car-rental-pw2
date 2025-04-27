@@ -1,5 +1,5 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { AddressModel } from 'src/utils/models/address.model';
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from 'src/utils/dto/addresses-dto/create-address.dto';
@@ -21,7 +21,7 @@ import {
  */
 @ApiTags('Addresses')
 @ApiBearerAuth()
-@UseGuards(AuthGuard, AdminGuard)
+@UseGuards(AuthGuard, AccessGuard)
 @Controller('addresses')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
@@ -71,7 +71,7 @@ export class AddressesController {
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
   async update(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() updateAddressDto: UpdateAddressDto,
   ): Promise<AddressModel> {
     return this.addressesService.update(id, updateAddressDto);

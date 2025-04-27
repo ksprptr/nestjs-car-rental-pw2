@@ -1,5 +1,5 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { BrandModel } from 'src/utils/models/brand.model';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from 'src/utils/dto/brands-dto/create-brand.dto';
@@ -56,7 +56,7 @@ export class BrandsController {
   @ApiCreatedResponse({ type: BrandModel, description: 'Brand created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AccessGuard)
   @Post()
   async create(@Body() createBrandDto: CreateBrandDto): Promise<BrandModel> {
     return this.brandsService.create(createBrandDto);
@@ -70,9 +70,12 @@ export class BrandsController {
   @ApiOkResponse({ type: BrandModel, description: 'Brand updated' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AccessGuard)
   @Patch(':id')
-  async update(@Param() id: string, @Body() updateBrandDto: UpdateBrandDto): Promise<BrandModel> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateBrandDto: UpdateBrandDto,
+  ): Promise<BrandModel> {
     return this.brandsService.update(id, updateBrandDto);
   }
 
@@ -84,7 +87,7 @@ export class BrandsController {
   @ApiOkResponse({ type: BrandModel, description: 'Brand deleted' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AccessGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<BrandModel> {
     return this.brandsService.delete(id);

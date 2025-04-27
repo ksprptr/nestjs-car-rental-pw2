@@ -1,6 +1,7 @@
 import ctx from './ctx';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { CustomExceptionFilter } from './utils/filters/exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -20,6 +21,15 @@ async function bootstrap() {
   const config = new DocumentBuilder().setTitle('Car Rental API').setVersion('1.0').build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      always: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   app.useGlobalFilters(new CustomExceptionFilter());
 

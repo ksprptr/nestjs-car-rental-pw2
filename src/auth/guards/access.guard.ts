@@ -9,10 +9,10 @@ import {
 } from '@nestjs/common';
 
 /**
- * Class representing an admin guard
+ * Class representing an access guard
  */
 @Injectable()
-export class AdminGuard {
+export class AccessGuard {
   /**
    * Function to check if user is an admin
    */

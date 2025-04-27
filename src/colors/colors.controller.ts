@@ -1,5 +1,5 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { ColorModel } from 'src/utils/models/color.model';
 import { ColorsService } from './colors.service';
 import { CreateColorDto } from 'src/utils/dto/colors-dto/create-color.dto';
@@ -21,7 +21,7 @@ import {
  */
 @ApiTags('Colors')
 @ApiBearerAuth()
-@UseGuards(AuthGuard, AdminGuard)
+@UseGuards(AuthGuard, AccessGuard)
 @Controller('colors')
 export class ColorsController {
   constructor(private readonly colorsService: ColorsService) {}
@@ -70,7 +70,10 @@ export class ColorsController {
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
-  async update(@Param() id: string, @Body() updateColorDto: UpdateColorDto): Promise<ColorModel> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateColorDto: UpdateColorDto,
+  ): Promise<ColorModel> {
     return this.colorsService.update(id, updateColorDto);
   }
 

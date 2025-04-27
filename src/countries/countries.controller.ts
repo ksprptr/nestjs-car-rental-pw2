@@ -1,5 +1,5 @@
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { CountryModel } from 'src/utils/models/country.model';
 import { CountriesService } from './countries.service';
 import { CreateCountryDto } from 'src/utils/dto/countries-dto/create-country.dto';
@@ -21,7 +21,7 @@ import {
  */
 @ApiTags('Countries')
 @ApiBearerAuth()
-@UseGuards(AuthGuard, AdminGuard)
+@UseGuards(AuthGuard, AccessGuard)
 @Controller('countries')
 export class CountriesController {
   constructor(private readonly countriesService: CountriesService) {}
@@ -71,7 +71,7 @@ export class CountriesController {
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
   @Patch(':id')
   async update(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() updateCountryDto: UpdateCountryDto,
   ): Promise<CountryModel> {
     return this.countriesService.update(id, updateCountryDto);

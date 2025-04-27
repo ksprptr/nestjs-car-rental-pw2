@@ -1,7 +1,7 @@
 import { Role } from 'prisma/generated/prisma';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserModel } from 'src/utils/models/user.model';
-import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { AccessGuard } from 'src/auth/guards/access.guard';
 import { UsersService } from './users.service';
 import { FrontendUser } from 'src/utils/types/user.types';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
@@ -45,7 +45,7 @@ export class UsersController {
   @ApiOkResponse({ type: [UserModel], description: 'Users found' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AccessGuard)
   @Get()
   async getAll(): Promise<UserModel[]> {
     return this.usersService.getAll();
@@ -71,7 +71,7 @@ export class UsersController {
   @ApiCreatedResponse({ type: UserModel, description: 'User created' })
   @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
   @ApiForbiddenResponse({ type: BasicStatusResponse, description: 'Forbidden' })
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard, AccessGuard)
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<UserModel> {
     return this.usersService.create(createUserDto);
@@ -88,14 +88,14 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Patch(':id')
   async update(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
     @Req() request: Request,
   ): Promise<UserModel> {
     const user: FrontendUser = request['user'];
 
     if (user.id !== id && user.role !== Role.ADMIN) {
-      throw new ForbiddenException('You are not allowed to update this user');
+      throw new ForbiddenException('Forbidden');
     }
 
     return this.usersService.update(id, updateUserDto);
@@ -115,7 +115,7 @@ export class UsersController {
     const user: FrontendUser = request['user'];
 
     if (user.id !== id && user.role !== Role.ADMIN) {
-      throw new ForbiddenException('You are not allowed to delete this user');
+      throw new ForbiddenException('Forbidden');
     }
 
     return this.usersService.delete(id);

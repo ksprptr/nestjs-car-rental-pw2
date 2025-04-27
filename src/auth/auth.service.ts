@@ -28,7 +28,7 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<TokensModel> {
     const user = await this.usersService.getByEmail(loginDto.email);
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
     const isPasswordValid = await ctx.functions.password.compare(loginDto.password, user.password);
 

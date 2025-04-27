@@ -113,6 +113,14 @@ export class UsersService {
       throw new ConflictException('Passwords do not match');
     }
 
+    if (updateUserDto.addressId) {
+      const address = await this.addressesService.get(updateUserDto.addressId);
+
+      if (!address) {
+        throw new NotFoundException('Address not found');
+      }
+    }
+
     try {
       const updatedUser = await this.prismaService.user.update({
         where: { id },
