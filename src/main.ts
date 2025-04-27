@@ -14,7 +14,7 @@ async function bootstrap() {
   ctx.functions.env.checkEnvVariables();
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGINS,
     methods: 'GET,HEAD,PATCH,POST,DELETE,OPTIONS',
   });
 

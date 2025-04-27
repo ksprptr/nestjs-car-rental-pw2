@@ -26,7 +26,15 @@ export const getNewFormattedDate = (): string => {
 export const checkEnvVariables = () => {
   const table = new Table({ head: ['Status', 'Environment Variable'], style: { head: ['cyan'] } });
 
-  const envVariables = ['PORT', 'CORS_ORIGINS', 'DATABASE_URL', 'JWT_SECRET', 'JWT_EXPIRES_IN'];
+  const envVariables = [
+    'PORT',
+    'CORS_ORIGINS',
+    'DATABASE_URL',
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET',
+    'JWT_EXPIRES_IN',
+    'JWT_REFRESH_EXPIRES_IN',
+  ];
 
   console.log(`[${getNewFormattedDate()}] Checking environment variables...`);
 
