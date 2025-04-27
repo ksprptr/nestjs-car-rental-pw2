@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum FuelType {
+  BENZINE
+  DIESEL
+  ELECTRO
+}
+
+enum Transmission {
+  AUTOMATIC
+  MANUAL
+}
+
+enum Continent {
+  AFRICA
+  ANTARCTICA
+  ASIA
+  EUROPE
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  AUSTRALIA
+}
+
+model User {
+  id                String                 @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String                 @unique
+  password          String
+  role              Role
+  address           Address?               @relation(fields: [addressId], references: [id])
+  addressId         String?
+  vehicles          Vehicle[]
+  favouriteVehicles UserFavouriteVehicle[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@map("users")
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  city         String
+  zip          String
+  streetName   String
+  streetNumber String
+  country      Country  @relation(fields: [countryId], references: [id])
+  countryId    String
+  users        User[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("addresses")
+}
+
+model UserFavouriteVehicle {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, vehicleId])
+  @@map("user_favourite_vehicles")
+}
+
+model Vehicle {
+  id                String                 @id @default(uuid())
+  owner             User                   @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  model             String
+  priceUsd          Float
+  brand             Brand                  @relation(fields: [brandId], references: [id])
+  brandId           String
+  color             Color                  @relation(fields: [colorId], references: [id])
+  colorId           String
+  attributes        VehicleAttributes?
+  favouritedByUsers UserFavouriteVehicle[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@map("vehicles")
+}
+
+model VehicleAttributes {
+  id              String       @id @default(uuid())
+  vehicle         Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicleId       String       @unique
+  manufactureYear Int
+  seatCount       Int
+  topSpeedMph     Int
+  fuelConsumption Float
+  fuelType        FuelType
+  transmission    Transmission
+  mileage         Int
+
+  @@map("vehicle_attributes")
+}
+
+model Brand {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  foundedYear Int
+  description String
+  country     Country   @relation(fields: [countryId], references: [id])
+  countryId   String
+  vehicles    Vehicle[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("brands")
+}
+
+model Color {
+  id              String    @id @default(uuid())
+  name            String
+  hex             String    @unique
+  brightnessLevel Int
+  metallic        Boolean
+  vehicles        Vehicle[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("colors")
+}
+
+model Country {
+  id         String    @id @default(uuid())
+  name       String
+  isoCode    String    @unique
+  continent  Continent
+  population Int
+  addresses  Address[]
+  brands     Brand[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("countries")
+}
