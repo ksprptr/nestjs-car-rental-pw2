@@ -6,9 +6,18 @@ import { ColorsModule } from './colors/colors.module';
 import { PrismaService } from './prisma/prisma.service';
 import { AddressesModule } from './addresses/addresses.module';
 import { CountriesModule } from './countries/countries.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, BrandsModule, AddressesModule, CountriesModule, ColorsModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    VehiclesModule,
+    BrandsModule,
+    AddressesModule,
+    CountriesModule,
+    ColorsModule,
+  ],
   controllers: [],
   providers: [PrismaService],
 })

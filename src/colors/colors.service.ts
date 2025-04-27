@@ -1,3 +1,4 @@
+import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { ColorModel } from 'src/utils/models/color.model';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,23 +18,11 @@ import {
 export class ColorsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public readonly colorSelect: Prisma.ColorSelect = {
-    id: true,
-    name: true,
-    hex: true,
-    brightnessLevel: true,
-    metallic: true,
-    createdAt: true,
-    updatedAt: true,
-    _count: false,
-    vehicles: false,
-  };
-
   /**
    * Function to get all colors
    */
   async getAll(): Promise<ColorModel[]> {
-    return await this.prismaService.color.findMany({ select: this.colorSelect });
+    return await this.prismaService.color.findMany({ select: ctx.selections.color.colorSelect });
   }
 
   /**
@@ -42,7 +31,7 @@ export class ColorsService {
   async get(id: string): Promise<ColorModel> {
     const color = await this.prismaService.color.findUnique({
       where: { id },
-      select: this.colorSelect,
+      select: ctx.selections.color.colorSelect,
     });
 
     if (!color) throw new NotFoundException('Color not found');
@@ -57,7 +46,7 @@ export class ColorsService {
     try {
       const newColor = await this.prismaService.color.create({
         data: createColorDto,
-        select: this.colorSelect,
+        select: ctx.selections.color.colorSelect,
       });
 
       return newColor;
@@ -80,7 +69,7 @@ export class ColorsService {
       const updatedColor = await this.prismaService.color.update({
         where: { id },
         data: updateColorDto,
-        select: this.colorSelect,
+        select: ctx.selections.color.colorSelect,
       });
 
       return updatedColor;
@@ -108,7 +97,7 @@ export class ColorsService {
     try {
       const deletedColor = await this.prismaService.color.delete({
         where: { id },
-        select: this.colorSelect,
+        select: ctx.selections.color.colorSelect,
       });
 
       return deletedColor;

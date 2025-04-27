@@ -1,3 +1,4 @@
+import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { CountryModel } from 'src/utils/models/country.model';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,24 +18,13 @@ import {
 export class CountriesService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public readonly countrySelect: Prisma.CountrySelect = {
-    id: true,
-    name: true,
-    isoCode: true,
-    continent: true,
-    population: true,
-    createdAt: true,
-    updatedAt: true,
-    addresses: false,
-    _count: false,
-    brands: false,
-  };
-
   /**
    * Function to get all countries
    */
   async getAll(): Promise<CountryModel[]> {
-    return await this.prismaService.country.findMany({ select: this.countrySelect });
+    return await this.prismaService.country.findMany({
+      select: ctx.selections.country.countrySelect,
+    });
   }
 
   /**
@@ -43,7 +33,7 @@ export class CountriesService {
   async get(id: string): Promise<CountryModel> {
     const country = await this.prismaService.country.findUnique({
       where: { id },
-      select: this.countrySelect,
+      select: ctx.selections.country.countrySelect,
     });
 
     if (!country) throw new NotFoundException('Country not found');
@@ -58,7 +48,7 @@ export class CountriesService {
     try {
       const newCountry = await this.prismaService.country.create({
         data: createCountryDto,
-        select: this.countrySelect,
+        select: ctx.selections.country.countrySelect,
       });
 
       return newCountry;
@@ -81,7 +71,7 @@ export class CountriesService {
       const updatedCountry = await this.prismaService.country.update({
         where: { id },
         data: updateCountryDto,
-        select: this.countrySelect,
+        select: ctx.selections.country.countrySelect,
       });
 
       return updatedCountry;
@@ -109,7 +99,7 @@ export class CountriesService {
     try {
       const deletedCountry = await this.prismaService.country.delete({
         where: { id },
-        select: this.countrySelect,
+        select: ctx.selections.country.countrySelect,
       });
 
       return deletedCountry;

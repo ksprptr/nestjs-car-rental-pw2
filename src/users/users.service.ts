@@ -1,8 +1,6 @@
 import ctx from 'src/ctx';
 import { UserModel } from 'src/utils/models/user.model';
 import { VehicleModel } from 'src/utils/models/vehicle.model';
-import { BrandsService } from 'src/brands/brands.service';
-import { ColorsService } from 'src/colors/colors.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
@@ -23,54 +21,13 @@ export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly addressesService: AddressesService,
-    private readonly brandsService: BrandsService,
-    private readonly colorsService: ColorsService,
   ) {}
-
-  public readonly userSelect: Prisma.UserSelect = {
-    id: true,
-    firstName: true,
-    lastName: true,
-    email: true,
-    password: false,
-    address: {
-      select: this.addressesService.addressSelect,
-    },
-    addressId: false,
-    role: true,
-    createdAt: true,
-    updatedAt: true,
-    _count: false,
-    vehicles: false,
-  };
-
-  public readonly vehicleSelect: Prisma.VehicleSelect = {
-    id: true,
-    model: true,
-    priceUsd: true,
-    attributes: true,
-    attributesId: false,
-    brand: {
-      select: this.brandsService.brandSelect,
-    },
-    brandId: false,
-    color: {
-      select: this.colorsService.colorSelect,
-    },
-    colorId: false,
-    createdAt: true,
-    updatedAt: true,
-    owner: false,
-    ownerId: false,
-    _count: false,
-    favouritedByUsers: false,
-  };
 
   /**
    * Function to get all users
    */
   async getAll(): Promise<UserModel[]> {
-    return await this.prismaService.user.findMany({ select: this.userSelect });
+    return await this.prismaService.user.findMany({ select: ctx.selections.user.userSelect });
   }
 
   /**
@@ -79,7 +36,7 @@ export class UsersService {
   async get(id: string): Promise<UserModel> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
-      select: this.userSelect,
+      select: ctx.selections.user.userSelect,
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -100,9 +57,7 @@ export class UsersService {
   async getUserVehicles(id: string): Promise<VehicleModel[]> {
     return await this.prismaService.vehicle.findMany({
       where: { ownerId: id },
-      select: {
-        ...this.vehicleSelect,
-      },
+      select: ctx.selections.vehicle.vehicleSelect,
     });
   }
 
@@ -112,7 +67,7 @@ export class UsersService {
   async getUserVehicle(userId: string, vehicleId: string): Promise<VehicleModel> {
     const vehicle = await this.prismaService.vehicle.findFirst({
       where: { id: vehicleId, ownerId: userId },
-      select: this.vehicleSelect,
+      select: ctx.selections.vehicle.vehicleSelect,
     });
 
     if (!vehicle) throw new NotFoundException('Vehicle not found');
@@ -131,7 +86,7 @@ export class UsersService {
 
     return await this.prismaService.vehicle.findMany({
       where: { id: { in: vehicleIds.map((vehicle) => vehicle.vehicleId) } },
-      select: this.vehicleSelect,
+      select: ctx.selections.vehicle.vehicleSelect,
     });
   }
 
@@ -152,7 +107,7 @@ export class UsersService {
           password: await ctx.functions.password.hash(createUserDto.password),
           role: Role.USER,
         },
-        select: this.userSelect,
+        select: ctx.selections.user.userSelect,
       });
 
       return newUser;
@@ -187,10 +142,12 @@ export class UsersService {
     }
 
     try {
+      const { passwordConfirmation: _, ...data } = updateUserDto;
+
       const updatedUser = await this.prismaService.user.update({
         where: { id },
-        data: updateUserDto,
-        select: this.userSelect,
+        data,
+        select: ctx.selections.user.userSelect,
       });
 
       return updatedUser;
@@ -218,7 +175,7 @@ export class UsersService {
     try {
       const deletedUser = await this.prismaService.user.delete({
         where: { id },
-        select: this.userSelect,
+        select: ctx.selections.user.userSelect,
       });
 
       return deletedUser;

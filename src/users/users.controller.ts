@@ -86,22 +86,6 @@ export class UsersController {
   }
 
   /**
-   * Controller to get a currently logged in user's favourite vehicles
-   */
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get my favourite vehicles' })
-  @ApiOkResponse({ type: [VehicleModel], description: "User's favourite vehicles" })
-  @ApiUnauthorizedResponse({ type: BasicStatusResponse, description: 'Unauthorized' })
-  @UseGuards(AuthGuard)
-  @Get('/me/favourite-vehicles')
-  async getUserFavouriteVehicles(@Req() request: Request): Promise<VehicleModel[]> {
-    const user: FrontendUser = request['user'];
-    const id = user.id;
-
-    return this.usersService.getUserFavouriteVehicles(id);
-  }
-
-  /**
    * Controller to create a new user
    */
   @ApiBearerAuth()

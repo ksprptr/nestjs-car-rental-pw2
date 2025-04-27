@@ -90,12 +90,11 @@ model Vehicle {
   ownerId           String
   model             String
   priceUsd          Float
-  attributes        VehicleAttributes      @relation(fields: [attributesId], references: [id])
-  attributesId      String                 @unique
   brand             Brand                  @relation(fields: [brandId], references: [id])
   brandId           String
   color             Color                  @relation(fields: [colorId], references: [id])
   colorId           String
+  attributes        VehicleAttributes?
   favouritedByUsers UserFavouriteVehicle[]
   createdAt         DateTime               @default(now())
   updatedAt         DateTime               @updatedAt
@@ -105,6 +104,8 @@ model Vehicle {
 
 model VehicleAttributes {
   id              String       @id @default(uuid())
+  vehicle         Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicleId       String       @unique
   manufactureYear Int
   seatCount       Int
   topSpeedMph     Int
@@ -112,7 +113,6 @@ model VehicleAttributes {
   fuelType        FuelType
   transmission    Transmission
   mileage         Int
-  vehicle         Vehicle?
 
   @@map("vehicle_attributes")
 }

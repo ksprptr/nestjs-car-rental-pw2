@@ -1,4 +1,5 @@
 import { functions } from 'src/utils/functions';
+import { selections } from 'src/utils/selections';
 
 /**
  * Context throughout the app
@@ -6,6 +7,7 @@ import { functions } from 'src/utils/functions';
  */
 const ctx = {
   functions,
+  selections,
 };
 
 export default ctx;

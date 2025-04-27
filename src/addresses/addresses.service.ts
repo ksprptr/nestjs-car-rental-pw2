@@ -1,7 +1,7 @@
+import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { AddressModel } from 'src/utils/models/address.model';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CountriesService } from 'src/countries/countries.service';
 import { CreateAddressDto } from 'src/utils/dto/addresses-dto/create-address.dto';
 import { UpdateAddressDto } from 'src/utils/dto/addresses-dto/update-address.dto';
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
@@ -11,32 +11,15 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
  */
 @Injectable()
 export class AddressesService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly countriesService: CountriesService,
-  ) {}
-
-  public readonly addressSelect: Prisma.AddressSelect = {
-    id: true,
-    city: true,
-    countryId: false,
-    country: {
-      select: this.countriesService.countrySelect,
-    },
-    zip: true,
-    streetName: true,
-    streetNumber: true,
-    createdAt: true,
-    updatedAt: true,
-    users: false,
-    _count: false,
-  };
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Function to get all addresses
    */
   async getAll(): Promise<AddressModel[]> {
-    return await this.prismaService.address.findMany({ select: this.addressSelect });
+    return await this.prismaService.address.findMany({
+      select: ctx.selections.address.addressSelect,
+    });
   }
 
   /**
@@ -45,7 +28,7 @@ export class AddressesService {
   async get(id: string): Promise<AddressModel> {
     const address = await this.prismaService.address.findUnique({
       where: { id },
-      select: this.addressSelect,
+      select: ctx.selections.address.addressSelect,
     });
 
     if (!address) throw new NotFoundException('Address not found');
@@ -57,10 +40,16 @@ export class AddressesService {
    * Function to create a new address
    */
   async create(createAddressDto: CreateAddressDto): Promise<AddressModel> {
+    const country = await this.prismaService.country.findUnique({
+      where: { id: createAddressDto.countryId },
+    });
+
+    if (!country) throw new NotFoundException('Country not found');
+
     try {
       const newAddress = await this.prismaService.address.create({
         data: createAddressDto,
-        select: this.addressSelect,
+        select: ctx.selections.address.addressSelect,
       });
 
       return newAddress;
@@ -75,11 +64,19 @@ export class AddressesService {
    * Function to update an address
    */
   async update(id: string, updateAddressDto: UpdateAddressDto): Promise<AddressModel> {
+    if (updateAddressDto.countryId) {
+      const country = await this.prismaService.country.findUnique({
+        where: { id: updateAddressDto.countryId },
+      });
+
+      if (!country) throw new NotFoundException('Country not found');
+    }
+
     try {
       const updatedAddress = await this.prismaService.address.update({
         where: { id },
         data: updateAddressDto,
-        select: this.addressSelect,
+        select: ctx.selections.address.addressSelect,
       });
 
       return updatedAddress;
@@ -101,7 +98,7 @@ export class AddressesService {
     try {
       const deletedAddress = await this.prismaService.address.delete({
         where: { id },
-        select: this.addressSelect,
+        select: ctx.selections.address.addressSelect,
       });
 
       return deletedAddress;

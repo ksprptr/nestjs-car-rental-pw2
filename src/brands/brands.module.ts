@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BrandsController } from './brands.controller';
-import { CountriesService } from 'src/countries/countries.service';
 
 /**
  * Class representing a brands module
@@ -10,6 +9,6 @@ import { CountriesService } from 'src/countries/countries.service';
 @Module({
   imports: [],
   controllers: [BrandsController],
-  providers: [BrandsService, PrismaService, CountriesService],
+  providers: [BrandsService, PrismaService],
 })
 export class BrandsModule {}

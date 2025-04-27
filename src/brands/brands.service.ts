@@ -1,9 +1,9 @@
+import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { BrandModel } from 'src/utils/models/brand.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBrandDto } from 'src/utils/dto/brands-dto/create-brand.dto';
 import { UpdateBrandDto } from 'src/utils/dto/brands-dto/update-brand.dto';
-import { CountriesService } from 'src/countries/countries.service';
 import {
   Injectable,
   ConflictException,
@@ -16,31 +16,13 @@ import {
  */
 @Injectable()
 export class BrandsService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly countriesService: CountriesService,
-  ) {}
-
-  public readonly brandSelect: Prisma.BrandSelect = {
-    id: true,
-    name: true,
-    country: {
-      select: this.countriesService.countrySelect,
-    },
-    countryId: false,
-    foundedYear: true,
-    description: true,
-    createdAt: true,
-    updatedAt: true,
-    _count: false,
-    vehicles: false,
-  };
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * Function to get all brands
    */
   async getAll(): Promise<BrandModel[]> {
-    return await this.prismaService.brand.findMany({ select: this.brandSelect });
+    return await this.prismaService.brand.findMany({ select: ctx.selections.brand.brandSelect });
   }
 
   /**
@@ -49,7 +31,7 @@ export class BrandsService {
   async get(id: string): Promise<BrandModel> {
     const brand = await this.prismaService.brand.findUnique({
       where: { id },
-      select: this.brandSelect,
+      select: ctx.selections.brand.brandSelect,
     });
 
     if (!brand) throw new NotFoundException('Brand not found');
@@ -61,10 +43,16 @@ export class BrandsService {
    * Function to create a new brand
    */
   async create(createBrandDto: CreateBrandDto): Promise<BrandModel> {
+    const country = await this.prismaService.country.findUnique({
+      where: { id: createBrandDto.countryId },
+    });
+
+    if (!country) throw new NotFoundException('Country not found');
+
     try {
       const newBrand = await this.prismaService.brand.create({
         data: createBrandDto,
-        select: this.brandSelect,
+        select: ctx.selections.brand.brandSelect,
       });
 
       return newBrand;
@@ -83,11 +71,19 @@ export class BrandsService {
    * Function to update a brand
    */
   async update(id: string, updateBrandDto: UpdateBrandDto): Promise<BrandModel> {
+    if (updateBrandDto.countryId) {
+      const country = await this.prismaService.country.findUnique({
+        where: { id: updateBrandDto.countryId },
+      });
+
+      if (!country) throw new NotFoundException('Country not found');
+    }
+
     try {
       const updatedBrand = await this.prismaService.brand.update({
         where: { id },
         data: updateBrandDto,
-        select: this.brandSelect,
+        select: ctx.selections.brand.brandSelect,
       });
 
       return updatedBrand;
@@ -115,7 +111,7 @@ export class BrandsService {
     try {
       const deletedBrand = await this.prismaService.brand.delete({
         where: { id },
-        select: this.brandSelect,
+        select: ctx.selections.brand.brandSelect,
       });
 
       return deletedBrand;
