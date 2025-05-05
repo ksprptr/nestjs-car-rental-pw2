@@ -7,7 +7,7 @@ import { IsBoolean, IsHexColor, IsNotEmpty, IsNumber, IsString } from 'class-val
 export class CreateColorDto {
   @ApiProperty({
     type: 'string',
-    example: 'Black',
+    example: 'Midnight Blue',
     description: "Color's name",
   })
   @IsString()
@@ -16,7 +16,7 @@ export class CreateColorDto {
 
   @ApiProperty({
     type: 'string',
-    example: '#000000',
+    example: '#191970',
     description: "Color's hex code",
   })
   @IsHexColor()
@@ -25,7 +25,7 @@ export class CreateColorDto {
 
   @ApiProperty({
     type: 'number',
-    example: 100,
+    example: 20,
     description: "Color's brightness level (0-100)",
   })
   @IsNumber()
@@ -34,7 +34,7 @@ export class CreateColorDto {
 
   @ApiProperty({
     type: 'boolean',
-    example: false,
+    example: true,
     description: "Color's is metallic",
   })
   @IsBoolean()

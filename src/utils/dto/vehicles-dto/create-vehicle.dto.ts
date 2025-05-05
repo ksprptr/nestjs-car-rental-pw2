@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateAttributesDto } from './attributes/create-attributes.dto';
 import { FuelType, Transmission } from 'prisma/generated/prisma';
@@ -7,10 +8,9 @@ import {
   IsString,
   IsDefined,
   IsNotEmpty,
-  IsNotEmptyObject,
   ValidateNested,
+  IsNotEmptyObject,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 /**
  * Class representing a create vehicle dto
@@ -18,7 +18,7 @@ import { Type } from 'class-transformer';
 export class CreateVehicleDto {
   @ApiProperty({
     type: 'string',
-    example: 'M5',
+    example: 'Mustang GT',
     description: "Vehicle's model",
   })
   @IsString()
@@ -27,7 +27,7 @@ export class CreateVehicleDto {
 
   @ApiProperty({
     type: 'number',
-    example: 123100,
+    example: 42000,
     description: "Vehicle's price in USD",
   })
   @IsNumber()
@@ -37,13 +37,13 @@ export class CreateVehicleDto {
   @ApiProperty({
     type: () => CreateAttributesDto,
     example: {
-      manufactureYear: 2025,
-      seatCount: 5,
-      topSpeedMph: 186,
-      fuelConsumption: 13,
+      manufactureYear: 2022,
+      seatCount: 4,
+      topSpeedMph: 165,
+      fuelConsumption: 20.1,
       fuelType: FuelType.BENZINE,
-      transmission: Transmission.AUTOMATIC,
-      mileage: 1200,
+      transmission: Transmission.MANUAL,
+      mileage: 12000,
     },
     description: "Vehicle's attributes",
   })

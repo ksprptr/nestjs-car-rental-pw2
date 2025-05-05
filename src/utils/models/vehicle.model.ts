@@ -11,20 +11,20 @@ export class VehicleModel {
   @ApiProperty({
     type: 'string',
     example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-    description: 'Vehicle ID',
+    description: 'Vehicle id',
   })
   id: string;
 
   @ApiProperty({
     type: 'string',
-    example: 'M5',
+    example: 'Mustang GT',
     description: "Vehicle's model",
   })
   model: string;
 
   @ApiProperty({
     type: 'number',
-    example: 123100,
+    example: 42000,
     description: "Vehicle's price in USD",
   })
   priceUsd: number;
@@ -33,13 +33,13 @@ export class VehicleModel {
     type: () => VehicleAttributesModel,
     example: {
       id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-      manufactureYear: 2025,
-      seatCount: 5,
-      topSpeedMph: 186,
-      fuelConsumption: 13,
+      manufactureYear: 2022,
+      seatCount: 4,
+      topSpeedMph: 165,
+      fuelConsumption: 20.1,
       fuelType: FuelType.BENZINE,
-      transmission: Transmission.AUTOMATIC,
-      mileage: 1200,
+      transmission: Transmission.MANUAL,
+      mileage: 12000,
     },
     description: "Vehicle's attributes",
   })
@@ -49,19 +49,18 @@ export class VehicleModel {
     type: () => BrandModel,
     example: {
       id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-      name: 'BMW',
+      name: 'Ford',
       country: {
         id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-        name: 'Germany',
-        isoCode: 'DE',
-        continent: Continent.EUROPE,
-        population: 100,
+        name: 'United States',
+        isoCode: 'US',
+        continent: Continent.NORTH_AMERICA,
+        population: 331000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      foundedYear: 1916,
-      description:
-        'Bayerische Motoren Werke AG, trading as BMW Group (commonly abbreviated to BMW, sometimes anglicised as Bavarian Motor Works), is a German multinational manufacturer of vehicles and motorcycles headquartered in Munich, Bavaria, Germany.',
+      foundedYear: 1903,
+      description: 'American multinational automaker headquartered in Dearborn, Michigan.',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -73,10 +72,10 @@ export class VehicleModel {
     type: () => ColorModel,
     example: {
       id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-      name: 'Black',
-      hex: '#000000',
-      brightnessLevel: 100,
-      metallic: false,
+      name: 'Midnight Blue',
+      hex: '#191970',
+      brightnessLevel: 20,
+      metallic: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

@@ -8,34 +8,34 @@ export class VehicleAttributesModel {
   @ApiProperty({
     type: 'string',
     example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-    description: 'Vehicle attributes ID',
+    description: 'Vehicle attributes id',
   })
   id: string;
 
   @ApiProperty({
     type: 'number',
-    example: 2025,
+    example: 2022,
     description: "Vehicle's manufacture year",
   })
   manufactureYear: number;
 
   @ApiProperty({
     type: 'number',
-    example: 5,
+    example: 4,
     description: "Vehicle's number of seats",
   })
   seatCount: number;
 
   @ApiProperty({
     type: 'number',
-    example: 186,
+    example: 165,
     description: "Vehicle's top speed in mph",
   })
   topSpeedMph: number;
 
   @ApiProperty({
     type: 'number',
-    example: 13,
+    example: 20.1,
     description: "Vehicle's fuel consumption in l/100km",
   })
   fuelConsumption: number;
@@ -50,7 +50,7 @@ export class VehicleAttributesModel {
 
   @ApiProperty({
     type: 'string',
-    example: Transmission.AUTOMATIC,
+    example: Transmission.MANUAL,
     description: "Vehicle's transmission type",
     enum: Transmission,
   })
@@ -58,7 +58,7 @@ export class VehicleAttributesModel {
 
   @ApiProperty({
     type: 'number',
-    example: 1200,
+    example: 12000,
     description: "Vehicle's mileage in km",
   })
   mileage: number;

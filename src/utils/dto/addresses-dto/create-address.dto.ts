@@ -7,7 +7,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateAddressDto {
   @ApiProperty({
     type: 'string',
-    example: 'New York',
+    example: 'Los Angeles',
     description: "Address's city",
   })
   @IsString()
@@ -25,7 +25,7 @@ export class CreateAddressDto {
 
   @ApiProperty({
     type: 'string',
-    example: '012345',
+    example: '90001',
     description: "Address's zip code",
   })
   @IsString()
@@ -34,7 +34,7 @@ export class CreateAddressDto {
 
   @ApiProperty({
     type: 'string',
-    example: 'Main St',
+    example: 'Sunset Blvd',
     description: "Address's street",
   })
   @IsString()
@@ -43,7 +43,7 @@ export class CreateAddressDto {
 
   @ApiProperty({
     type: 'string',
-    example: '123',
+    example: '100',
     description: "Address's street number",
   })
   @IsString()

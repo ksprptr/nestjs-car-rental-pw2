@@ -12,13 +12,13 @@ export class UpdateVehicleDto extends PartialType(OmitType(CreateVehicleDto, ['a
   @ApiProperty({
     type: () => UpdateAttributesDto,
     example: {
-      manufactureYear: 2025,
-      seatCount: 5,
-      topSpeedMph: 186,
-      fuelConsumption: 13,
+      manufactureYear: 2022,
+      seatCount: 4,
+      topSpeedMph: 165,
+      fuelConsumption: 20.1,
       fuelType: FuelType.BENZINE,
-      transmission: Transmission.AUTOMATIC,
-      mileage: 1200,
+      transmission: Transmission.MANUAL,
+      mileage: 12000,
     },
     description: "Vehicle's attributes",
   })

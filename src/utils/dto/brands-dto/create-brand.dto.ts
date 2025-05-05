@@ -7,7 +7,7 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateBrandDto {
   @ApiProperty({
     type: 'string',
-    example: 'BMW',
+    example: 'Ford',
     description: "Brand's name",
   })
   @IsString()
@@ -25,7 +25,7 @@ export class CreateBrandDto {
 
   @ApiProperty({
     type: 'number',
-    example: 1916,
+    example: 1903,
     description: "Brand's founded year",
   })
   @IsNumber()
@@ -34,8 +34,7 @@ export class CreateBrandDto {
 
   @ApiProperty({
     type: 'string',
-    example:
-      'Bayerische Motoren Werke AG, trading as BMW Group (commonly abbreviated to BMW, sometimes anglicised as Bavarian Motor Works), is a German multinational manufacturer of vehicles and motorcycles headquartered in Munich, Bavaria, Germany.',
+    example: 'American multinational automaker headquartered in Dearborn, Michigan.',
     description: "Brand's description",
   })
   @IsString()

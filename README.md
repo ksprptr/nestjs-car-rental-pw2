@@ -2,7 +2,7 @@
 
 # Car Rental API - NestJS
 
-> A Car Rental API built for a PW2 school project. This API manages users, vehicles, rentals, and related entities using NestJS and Prisma ORM with a PostgreSQL database.
+> A Car Rental API built for a PW2 school project. This API manages users, vehicles, brands, colors, countries, and related entities. Built using NestJS and Prisma ORM with a PostgreSQL database.
 
 - [Prerequisites](#Prerequisites)
 - [Installation](#Installation)

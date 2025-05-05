@@ -36,7 +36,7 @@ export class CreateCountryDto {
 
   @ApiProperty({
     type: 'number',
-    example: 100,
+    example: 331000000,
     description: 'Country population',
   })
   @IsNumber()

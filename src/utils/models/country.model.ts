@@ -8,7 +8,7 @@ export class CountryModel {
   @ApiProperty({
     type: 'string',
     example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-    description: 'Country ID',
+    description: 'Country id',
   })
   id: string;
 
@@ -36,7 +36,7 @@ export class CountryModel {
 
   @ApiProperty({
     type: 'number',
-    example: 100,
+    example: 331000000,
     description: "Country's population",
   })
   population: number;

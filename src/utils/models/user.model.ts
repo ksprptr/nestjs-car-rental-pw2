@@ -9,7 +9,7 @@ export class UserModel {
   @ApiProperty({
     type: 'string',
     example: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-    description: 'User ID',
+    description: 'User id',
   })
   id: string;
 
@@ -38,23 +38,23 @@ export class UserModel {
     type: () => AddressModel,
     example: {
       id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
-      city: 'New York',
+      city: 'Los Angeles',
       country: {
         id: 'cd760a96-e3ac-4517-bdea-753253bdb0e0',
         name: 'United States',
         isoCode: 'US',
         continent: Continent.NORTH_AMERICA,
-        population: 100,
+        population: 331000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      zip: '012345',
-      streetName: 'Main St',
-      streetNumber: '123',
+      zip: '90001',
+      streetName: 'Sunset Blvd',
+      streetNumber: '100',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-    description: 'Address ID',
+    description: 'Address id',
   })
   address: AddressModel;
 

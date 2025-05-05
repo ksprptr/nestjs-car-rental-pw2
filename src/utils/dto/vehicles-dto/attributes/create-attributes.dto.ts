@@ -8,7 +8,7 @@ import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 export class CreateAttributesDto {
   @ApiProperty({
     type: 'number',
-    example: 2025,
+    example: 2022,
     description: "Vehicle's manufacture year",
   })
   @IsNumber()
@@ -17,7 +17,7 @@ export class CreateAttributesDto {
 
   @ApiProperty({
     type: 'number',
-    example: 5,
+    example: 4,
     description: "Vehicle's number of seats",
   })
   @IsNumber()
@@ -26,7 +26,7 @@ export class CreateAttributesDto {
 
   @ApiProperty({
     type: 'number',
-    example: 186,
+    example: 165,
     description: "Vehicle's top speed in mph",
   })
   @IsNumber()
@@ -35,7 +35,7 @@ export class CreateAttributesDto {
 
   @ApiProperty({
     type: 'number',
-    example: 13,
+    example: 20.1,
     description: "Vehicle's fuel consumption in l/100km",
   })
   @IsNumber()
@@ -54,7 +54,7 @@ export class CreateAttributesDto {
 
   @ApiProperty({
     type: 'string',
-    example: Transmission.AUTOMATIC,
+    example: Transmission.MANUAL,
     description: "Vehicle's transmission type",
     enum: Transmission,
   })
@@ -64,7 +64,7 @@ export class CreateAttributesDto {
 
   @ApiProperty({
     type: 'number',
-    example: 1200,
+    example: 12000,
     description: "Vehicle's mileage in km",
   })
   @IsNumber()
