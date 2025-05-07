@@ -1,9 +1,9 @@
 {
   "name": "nestjs-car-rental-pw2",
   "version": "0.0.1",
-  "description": "A Car Rental API built for a PW2 school project. This API manages users, vehicles, brands, colors, countries, and related entities. Built using NestJS and Prisma ORM with a PostgreSQL database.",
-  "author": "Petr Kašpar",
+  "description": "A Car Rental API built for a PW2 school project. This API manages users, vehicles, brands, colors, countries, and related entities.",
   "private": true,
+  "author": "Petr Kašpar",
   "license": "MIT",
   "scripts": {
     "build": "prisma generate && nest build",

@@ -1,8 +1,6 @@
-<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo.svg" width="220" alt="Nest Logo" /></a>
+# Car Rental API
 
-# Car Rental API - NestJS
-
-> A Car Rental API built for a PW2 school project. This API manages users, vehicles, brands, colors, countries, and related entities. Built using NestJS and Prisma ORM with a PostgreSQL database.
+> A Car Rental API built for a PW2 school project. This API manages users, vehicles, brands, colors, countries, and related entities.
 
 - [Prerequisites](#Prerequisites)
 - [Installation](#Installation)
@@ -20,7 +18,7 @@
 
 - Go to the project folder using `cd nestjs-car-rental-pw2/`
 - Install all dependecies using `pnpm install`
-- Copy `.env.example` to `.env` and change the properties
+- Copy `.env.example` to `.env` and update the properties accordingly
   - **(Only first run)** Run `npx prisma migrate deploy`
 
 ## Run

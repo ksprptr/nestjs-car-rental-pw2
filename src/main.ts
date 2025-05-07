@@ -21,7 +21,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Car Rental API')
     .setDescription(
-      'NestJS API for car rental management, covering users, vehicles, brands, colors, countries, and related entities.',
+      'API for car rental management, covering users, vehicles, brands, colors, countries, and related entities.',
     )
     .setVersion('1.0')
     .addBearerAuth()
