@@ -1,7 +1,7 @@
-import ctx from './ctx';
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { checkEnvVariables } from './utils/functions/env.functions';
 import { CustomExceptionFilter } from './utils/filters/exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -11,7 +11,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  ctx.functions.env.checkEnvVariables();
+  checkEnvVariables();
 
   app.enableCors({
     origin: process.env.CORS_ORIGINS,

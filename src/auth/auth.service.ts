@@ -1,10 +1,10 @@
-import ctx from 'src/ctx';
 import { LoginDto } from 'src/utils/dto/auth-dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokensModel } from 'src/utils/models/tokens.model';
 import { RegisterDto } from 'src/utils/dto/auth-dto/register.dto';
 import { UsersService } from 'src/users/users.service';
 import { FrontendUser } from 'src/utils/types/user.types';
+import { comparePassword } from 'src/utils/functions/password.functions';
 import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 
 /**
@@ -25,7 +25,7 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const isPasswordValid = await ctx.functions.password.compare(loginDto.password, user.password);
+    const isPasswordValid = await comparePassword(loginDto.password, user.password);
 
     if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials');
 

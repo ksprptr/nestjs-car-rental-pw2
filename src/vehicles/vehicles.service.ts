@@ -1,10 +1,10 @@
-import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { VehicleModel } from 'src/utils/models/vehicle.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto } from 'src/utils/dto/vehicles-dto/create-vehicle.dto';
 import { UpdateVehicleDto } from 'src/utils/dto/vehicles-dto/update-vehicle.dto';
 import { BasicStatusResponse } from 'src/utils/models/response.model';
+import { vehicleSelect as select } from 'src/utils/selections/vehicle.selection';
 import {
   Injectable,
   ConflictException,
@@ -46,7 +46,7 @@ export class VehiclesService {
           brandId: createVehicleDto.brandId,
           colorId: createVehicleDto.colorId,
         },
-        select: ctx.selections.vehicle.vehicleSelect,
+        select,
       });
 
       await this.prismaService.vehicleAttributes.create({
@@ -110,7 +110,7 @@ export class VehiclesService {
           brandId: updateVehicleDto.brandId,
           colorId: updateVehicleDto.colorId,
         },
-        select: ctx.selections.vehicle.vehicleSelect,
+        select,
       });
     } catch {
       throw new InternalServerErrorException(
@@ -146,7 +146,7 @@ export class VehiclesService {
 
       return await this.prismaService.vehicle.delete({
         where: { id: vehicleId, ownerId: userId },
-        select: ctx.selections.vehicle.vehicleSelect,
+        select,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
@@ -165,7 +165,7 @@ export class VehiclesService {
   async getFavouriteVehicles(userId: string): Promise<VehicleModel[]> {
     const vehicles = await this.prismaService.userFavouriteVehicle.findMany({
       where: { userId },
-      include: { vehicle: { select: ctx.selections.vehicle.vehicleSelect } },
+      include: { vehicle: { select } },
     });
 
     return vehicles.map((vehicle) => vehicle.vehicle);

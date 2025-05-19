@@ -10,7 +10,7 @@ const padStart = (value: any): string => {
 /**
  * Function to get a new formatted date
  */
-export const getNewFormattedDate = (): string => {
+const getNewFormattedDate = (): string => {
   const date = new Date();
   const hours = date.getHours();
   const minutes = date.getMinutes();

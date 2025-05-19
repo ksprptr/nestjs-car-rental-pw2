@@ -1,11 +1,13 @@
-import ctx from 'src/ctx';
 import { UserModel } from 'src/utils/models/user.model';
 import { VehicleModel } from 'src/utils/models/vehicle.model';
+import { hashPassword } from 'src/utils/functions/password.functions';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { vehicleSelect } from 'src/utils/selections/vehicle.selection';
 import { CreateUserDto } from 'src/utils/dto/users-dto/create-user.dto';
 import { UpdateUserDto } from 'src/utils/dto/users-dto/update-user.dto';
 import { AddressesService } from 'src/addresses/addresses.service';
 import { Prisma, Role, User } from 'prisma/generated/prisma';
+import { userSelect as select } from 'src/utils/selections/user.selection';
 import {
   Injectable,
   ConflictException,
@@ -28,17 +30,14 @@ export class UsersService {
    * Function to get all users
    */
   async getAll(): Promise<UserModel[]> {
-    return await this.prismaService.user.findMany({ select: ctx.selections.user.userSelect });
+    return await this.prismaService.user.findMany({ select });
   }
 
   /**
    * Function to get a user by id
    */
   async get(id: string): Promise<UserModel> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id },
-      select: ctx.selections.user.userSelect,
-    });
+    const user = await this.prismaService.user.findUnique({ where: { id }, select });
 
     if (!user) throw new NotFoundException('User not found');
 
@@ -58,7 +57,7 @@ export class UsersService {
   async getUserVehicles(id: string): Promise<VehicleModel[]> {
     return await this.prismaService.vehicle.findMany({
       where: { ownerId: id },
-      select: ctx.selections.vehicle.vehicleSelect,
+      select: vehicleSelect,
     });
   }
 
@@ -68,7 +67,7 @@ export class UsersService {
   async getUserVehicle(userId: string, vehicleId: string): Promise<VehicleModel> {
     const vehicle = await this.prismaService.vehicle.findFirst({
       where: { id: vehicleId, ownerId: userId },
-      select: ctx.selections.vehicle.vehicleSelect,
+      select: vehicleSelect,
     });
 
     if (!vehicle) throw new NotFoundException('Vehicle not found');
@@ -90,10 +89,10 @@ export class UsersService {
           firstName: createUserDto.firstName,
           lastName: createUserDto.lastName,
           email: createUserDto.email,
-          password: await ctx.functions.password.hash(createUserDto.password),
+          password: await hashPassword(createUserDto.password),
           role: Role.USER,
         },
-        select: ctx.selections.user.userSelect,
+        select,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
@@ -131,11 +130,8 @@ export class UsersService {
 
       return await this.prismaService.user.update({
         where: { id },
-        data: {
-          ...data,
-          password: await ctx.functions.password.hash(data.password),
-        },
-        select: ctx.selections.user.userSelect,
+        data: { ...data, password: await hashPassword(data.password) },
+        select,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -173,10 +169,7 @@ export class UsersService {
     }
 
     try {
-      return await this.prismaService.user.delete({
-        where: { id },
-        select: ctx.selections.user.userSelect,
-      });
+      return await this.prismaService.user.delete({ where: { id }, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

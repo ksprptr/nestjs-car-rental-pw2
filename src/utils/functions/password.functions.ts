@@ -5,7 +5,7 @@ const saltRounds = 12;
 /**
  * Function to hash a password
  */
-export const hash = async (password: string): Promise<string> => {
+export const hashPassword = async (password: string): Promise<string> => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
 
@@ -18,7 +18,10 @@ export const hash = async (password: string): Promise<string> => {
 /**
  * Function to compare a password with a hash
  */
-export const compare = async (password: string, hashedPassword: string): Promise<boolean> => {
+export const comparePassword = async (
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> => {
   try {
     return await bcrypt.compare(password, hashedPassword);
   } catch (error) {

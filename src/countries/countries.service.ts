@@ -1,9 +1,9 @@
-import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { CountryModel } from 'src/utils/models/country.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCountryDto } from 'src/utils/dto/countries-dto/create-country.dto';
 import { UpdateCountryDto } from 'src/utils/dto/countries-dto/update-country.dto';
+import { countrySelect as select } from 'src/utils/selections/country.selection';
 import {
   Injectable,
   ConflictException,
@@ -22,19 +22,14 @@ export class CountriesService {
    * Function to get all countries
    */
   async getAll(): Promise<CountryModel[]> {
-    return await this.prismaService.country.findMany({
-      select: ctx.selections.country.countrySelect,
-    });
+    return await this.prismaService.country.findMany({ select });
   }
 
   /**
    * Function to get a country by id
    */
   async get(id: string): Promise<CountryModel> {
-    const country = await this.prismaService.country.findUnique({
-      where: { id },
-      select: ctx.selections.country.countrySelect,
-    });
+    const country = await this.prismaService.country.findUnique({ where: { id }, select });
 
     if (!country) throw new NotFoundException('Country not found');
 
@@ -46,10 +41,7 @@ export class CountriesService {
    */
   async create(createCountryDto: CreateCountryDto): Promise<CountryModel> {
     try {
-      return await this.prismaService.country.create({
-        data: createCountryDto,
-        select: ctx.selections.country.countrySelect,
-      });
+      return await this.prismaService.country.create({ data: createCountryDto, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Country with that iso code already exists');
@@ -69,7 +61,7 @@ export class CountriesService {
       return await this.prismaService.country.update({
         where: { id },
         data: updateCountryDto,
-        select: ctx.selections.country.countrySelect,
+        select,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -93,10 +85,7 @@ export class CountriesService {
    */
   async delete(id: string): Promise<CountryModel> {
     try {
-      return await this.prismaService.country.delete({
-        where: { id },
-        select: ctx.selections.country.countrySelect,
-      });
+      return await this.prismaService.country.delete({ where: { id }, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

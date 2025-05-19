@@ -1,9 +1,9 @@
-import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { BrandModel } from 'src/utils/models/brand.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBrandDto } from 'src/utils/dto/brands-dto/create-brand.dto';
 import { UpdateBrandDto } from 'src/utils/dto/brands-dto/update-brand.dto';
+import { brandSelect as select } from 'src/utils/selections/brand.selection';
 import {
   Injectable,
   ConflictException,
@@ -22,17 +22,14 @@ export class BrandsService {
    * Function to get all brands
    */
   async getAll(): Promise<BrandModel[]> {
-    return await this.prismaService.brand.findMany({ select: ctx.selections.brand.brandSelect });
+    return await this.prismaService.brand.findMany({ select });
   }
 
   /**
    * Function to get a brand by id
    */
   async get(id: string): Promise<BrandModel> {
-    const brand = await this.prismaService.brand.findUnique({
-      where: { id },
-      select: ctx.selections.brand.brandSelect,
-    });
+    const brand = await this.prismaService.brand.findUnique({ where: { id }, select });
 
     if (!brand) throw new NotFoundException('Brand not found');
 
@@ -51,10 +48,7 @@ export class BrandsService {
     if (!countryExists) throw new NotFoundException('Country not found');
 
     try {
-      return await this.prismaService.brand.create({
-        data: createBrandDto,
-        select: ctx.selections.brand.brandSelect,
-      });
+      return await this.prismaService.brand.create({ data: createBrandDto, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Brand with that name already exists');
@@ -80,11 +74,7 @@ export class BrandsService {
     }
 
     try {
-      return await this.prismaService.brand.update({
-        where: { id },
-        data: updateBrandDto,
-        select: ctx.selections.brand.brandSelect,
-      });
+      return await this.prismaService.brand.update({ where: { id }, data: updateBrandDto, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -107,10 +97,7 @@ export class BrandsService {
    */
   async delete(id: string): Promise<BrandModel> {
     try {
-      return await this.prismaService.brand.delete({
-        where: { id },
-        select: ctx.selections.brand.brandSelect,
-      });
+      return await this.prismaService.brand.delete({ where: { id }, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

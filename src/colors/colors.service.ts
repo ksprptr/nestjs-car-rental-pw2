@@ -1,9 +1,9 @@
-import ctx from 'src/ctx';
 import { Prisma } from 'prisma/generated/prisma';
 import { ColorModel } from 'src/utils/models/color.model';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateColorDto } from 'src/utils/dto/colors-dto/create-color.dto';
 import { UpdateColorDto } from 'src/utils/dto/colors-dto/update-color.dto';
+import { colorSelect as select } from 'src/utils/selections/color.selection';
 import {
   Injectable,
   ConflictException,
@@ -22,17 +22,14 @@ export class ColorsService {
    * Function to get all colors
    */
   async getAll(): Promise<ColorModel[]> {
-    return await this.prismaService.color.findMany({ select: ctx.selections.color.colorSelect });
+    return await this.prismaService.color.findMany({ select });
   }
 
   /**
    * Function to get a color by id
    */
   async get(id: string): Promise<ColorModel> {
-    const color = await this.prismaService.color.findUnique({
-      where: { id },
-      select: ctx.selections.color.colorSelect,
-    });
+    const color = await this.prismaService.color.findUnique({ where: { id }, select });
 
     if (!color) throw new NotFoundException('Color not found');
 
@@ -44,10 +41,7 @@ export class ColorsService {
    */
   async create(createColorDto: CreateColorDto): Promise<ColorModel> {
     try {
-      return await this.prismaService.color.create({
-        data: createColorDto,
-        select: ctx.selections.color.colorSelect,
-      });
+      return await this.prismaService.color.create({ data: createColorDto, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new ConflictException('Color with that hex value already exists');
@@ -64,11 +58,7 @@ export class ColorsService {
    */
   async update(id: string, updateColorDto: UpdateColorDto): Promise<ColorModel> {
     try {
-      return await this.prismaService.color.update({
-        where: { id },
-        data: updateColorDto,
-        select: ctx.selections.color.colorSelect,
-      });
+      return await this.prismaService.color.update({ where: { id }, data: updateColorDto, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -91,10 +81,7 @@ export class ColorsService {
    */
   async delete(id: string): Promise<ColorModel> {
     try {
-      return await this.prismaService.color.delete({
-        where: { id },
-        select: ctx.selections.color.colorSelect,
-      });
+      return await this.prismaService.color.delete({ where: { id }, select });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
